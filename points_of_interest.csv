@@ -1,0 +1,51 @@
+poi_id,name,category,Latitude,Longitude,off_day,opening_hours,closing_hours,google_rating,review_count,visit_duration_min,indoor_ratio,shelter_ratio,mandatory,zone
+1,Dataran Merdeka,Cultural / Historical,3.1496764,101.6942674,,12:00:00 AM,12:00:00 AM,4.5,52968,90 min,0.2,0.1,YES,B
+2,Bangunan Sultan Abdul Samad,Cultural / Historical,3.1486259,101.6944497,,8:00:00 AM,10:00:00 PM,4.7,2086,45 min,0.1,0.1,NO,B
+3,Muzium Tekstil Negara,Cultural / Historical,3.1465453,101.6939406,,9:00:00 AM,5:00:00 PM,4.6,1816,60 min,0.8,0.3,NO,B
+4,Muzium Negara,Cultural / Historical,3.1376023,101.6878697,,9:00:00 AM,5:00:00 PM,4.3,14500,90 min,0.8,0.3,YES,B
+5,Kuala Lumpur City Gallery,Cultural / Historical,3.1472239,101.693407,Tue,11:00:00 AM,6:30:00 PM,4.2,66,60 min,0.6,0.3,NO,B
+6,Muzium Telekom,Cultural / Historical,3.1491436,101.6989845,,9:00:00 AM,5:00:00 PM,4.3,1606,90 min,0.8,0.3,NO,B
+7,Muzium Kesenian Islam Malaysia,Cultural / Historical,3.1408278,101.6893921,,9:30:00 AM,6:00:00 PM,4.7,5914,120 min,0.8,0.3,NO,B
+8,KL Bird Park,Parks/Outdoor,3.143164,101.6884845,,9:00:00 AM,5:30:00 PM,4.4,16421,120 min,0.1,0.3,NO,B
+9,Bangunan Zhongshan,Cultural / Historical,3.1377298,101.6971033,,10:00:00 AM,6:00:00 PM,4.3,641,120 min,0.7,0.3,NO,B
+10,Memorial Tun P. Ramlee,Cultural / Historical,3.1949696,101.7081168,,10:00:00 AM,5:00:00 PM,4.6,524,30 min,0.2,0.1,NO,C
+11,Memorial Lim Lian Geok,Cultural / Historical,3.1370454,101.7012022,,10:00:00 AM,5:00:00 PM,4.6,102,60 min,0.2,0.1,NO,B
+12,Butterfly Park,Parks/Outdoor,3.145333,101.688667,,9:00:00 AM,4:30:00 PM,4.2,6052,30 min,0.1,0.3,NO,B
+13,Menara Berkembar Petronas,Modern Landmarks,3.1585926,101.7118658,,9:00:00 AM,9:00:00 PM,4.7,102926,60 min,0.7,0.3,YES,A
+14,Menara Kuala Lumpur,Modern Landmarks,3.152859,101.7037604,,9:00:00 AM,10:00:00 PM,4.5,41883,60 min,0.5,0.2,NO,A
+15,Pintasan Saloma,Modern Landmarks,3.1612697,101.7080099,,5:00:00 AM,12:00:00 AM,4.6,3907,30 min,0.1,0.2,NO,A
+16,Sky Deck KL Tower,Modern Landmarks,3.1525657,101.7161564,,9:00:00 AM,10:00:00 PM,4.6,5909,60 min,0.1,0,NO,A
+17,Merdeka 118,Modern Landmarks,3.1427857,101.7008622,,12:00:00 AM,12:00:00 AM,4.6,2552,60 min,0.1,0.1,NO,A
+18,National Monument,Modern Landmarks,3.14889,101.68389,,7:00:00 AM,6:00:00 PM,4.5,4329,45 min,0,0.1,NO,B
+19,Royal Selangor Visitor Centre,Cultural / Historical,3.196900267,101.724434,,9:00:00 AM,5:00:00 PM,4.5,5641,30 min,0.7,0.5,NO,C
+20,Central Market,Shopping/Retail,3.146249015,101.6952011,,10:00:00 AM,10:00:00 PM,4.3,60603,120 min,0.8,0.5,NO,B
+21,Laluan Kasturi,Shopping/Retail,3.1458614,101.6958556,,10:00:00 AM,10:00:00 PM,4.4,841,120 min,0.6,0.4,NO,B
+22,Pavilion Kuala Lumpur,Shopping/Retail,3.150005,101.7124664,,10:00:00 AM,10:00:00 PM,4.6,63394,210 min,0.9,0.8,NO,A
+23,Suria KLCC,Shopping/Retail,3.1581027,101.7128662,,10:00:00 AM,10:00:00 PM,4.6,75193,210 min,0.9,0.8,NO,A
+24,Food Court Lot 10,Dining/Food,3.1463684,101.7119416,,10:00:00 AM,9:30:00 PM,4.1,6539,90 min,0.8,0.7,NO,A
+25,Berjaya Times Square,Shopping/Retail,3.1424992,101.7094399,,10:00:00 AM,10:00:00 PM,4.3,33894,240 min,0.9,0.8,NO,A
+26,Plaza Pudu,Shopping/Retail,3.1379129,101.714003,,12:30:00 PM,8:00:00 PM,3.9,200,120 min,0.7,0.4,NO,B
+27,Kompleks ICC Pudu,Shopping/Retail,3.138383,101.7142513,,6:00:00 AM,2:00:00 PM,4,9372,120 min,0.8,0.5,NO,B
+28,Fahrenheit 88,Shopping/Retail,3.1474105,101.7125207,,10:00:00 AM,10:00:00 PM,4.2,13859,210 min,0.9,0.8,NO,A
+29,Dong Teh Mun Food Court,Dining/Food,3.1433449,101.6976536,,7:00:00 AM,2:00:00 AM,4.3,42,60 min,0.4,0.3,NO,B
+30,Taman Eko Rimba Kuala Lumpur,Parks/Outdoor,3.1557489,101.7024698,,8:00:00 AM,4:30:00 PM,4.1,8746,120 min,0.1,0.4,NO,A
+31,Taman Tasik Titiwangsa,Parks/Outdoor,3.178881,101.704289,,6:00:00 AM,7:00:00 PM,4.6,1814,60 min,0.1,0.3,NO,C
+32,The Starhill,Shopping/Retail,3.148882312,101.7142687,,10:00:00 AM,10:00:00 PM,4.3,3167,120 min,0.9,0.8,NO,A
+33,Queen Victoria's Fountain,Cultural / Historical,3.1476432,101.6938468,,12:00:00 AM,12:00:00 AM,4.4,307,120 min,0,0,NO,B
+34,National Mosque of Malaysia,Religious Sites,3.1419189,101.6920986,,5:30:00 AM,11:00:00 PM,4.8,26677,45 min,0.6,0.3,YES,B
+35,Sri Maha Mariamman Temple,Religious Sites,3.14454202,101.6960254,,7:30:00 AM,10:34:00 AM,4.4,4582,20 min,0.5,0.2,YES,B
+36,Sin Sze Si Ya Temple,Religious Sites,3.1455011,101.6964185,,7:00:00 AM,5:00:00 PM,4.4,2426,20 min,0.5,0.2,NO,B
+37,St Mary's Cathedral,Religious Sites,3.1503446,101.693235,,9:00:00 AM,5:00:00 PM,4.7,608,60 min,0.6,0.3,NO,B
+38,Buddha Jayanti Temple,Religious Sites,3.1332221,101.7177159,,8:00:00 AM,5:00:00 PM,4.7,83,20 min,0.5,0.2,NO,C
+39,Jalan Alor Street Art,Dining/Food,3.147219,101.7092281,,12:00:00 AM,12:00:00 AM,4,921,60 min,0.1,0.1,NO,A
+40,Jalan Petaling,Dining/Food,3.1452028,101.6975134,,11:00:00 AM,12:00:00 AM,4,480,60 min,0.3,0.2,NO,B
+41,KL Pudu Wai Sek Kai ,Dining/Food,3.1349679,101.7128959,,1:00:00 PM,10:00:00 PM,3.7,1321,60 min,0.2,0.1,NO,B
+42,Kwai Chai Hong,Dining/Food,3.1414826,101.6975773,,9:00:00 AM,12:00:00 AM,4.3,4051,60 min,0.2,0.1,NO,B
+43,Tapak Urban Street Dining Stadium KL,Dining/Food,3.1015574,101.7221361,,5:00:00 PM,1:00:00 AM,4.1,1061,60 min,0.2,0.1,NO,C
+44,Aquaria KLCC,Entertainment,3.1533436,101.7130586,,10:00:00 AM,8:00:00 PM,4.3,40567,120 min,0.9,0.9,NO,A
+45,Petrosains,Entertainment,3.1575283,101.7118699,,9:30:00 AM,5:30:00 PM,4.6,9312,180 min,0.9,0.8,NO,A
+46,Planetarium Negara,Entertainment,3.139486,101.6893032,Mon,9:00:00 AM,4:30:00 PM,4,893,120 min,0.8,0.2,NO,B
+47,Berjaya Times Square Theme Park,Entertainment,3.1421651,101.7105637,,12:00:00 PM,9:00:00 PM,4.4,14151,300 min,0.8,0.7,NO,A
+48,Perdana Botanical Gardens,Parks/Outdoor,3.143678,101.686073,,5:30 AM,10:00 PM,4.5,27838,180 min,0.1,0.3,YES,B
+49,Ilham Gallery,Cultural / Historical,3.160227302,101.7187604,Mon,11:00 AM,7:00 PM,4.6,1241,60 min,0.8,0.3,NO,A
+50,Batu Caves,Religious Sites,3.238054356,101.6839985,,7:00 AM,9:00 PM,4.4,79612,90 min,0.2,0.1,YES,C
