@@ -1,0 +1,4 @@
+Algorithm,POI_Count,Time_Used,ICR,AUA,TTT,Total_Utility,Runtime,Replan_Latency
+Static Utility,6,479.8,12.0,13.2,114.8,51.37,0.107,
+Static Distance,5,470.6,10.0,10.59,45.6,41.2,0.121,
+Adaptive (No Thermal),3,472.1,6.0,7.52,82.1,29.26,0.259,0.091
