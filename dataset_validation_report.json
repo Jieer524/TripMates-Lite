@@ -1,0 +1,61 @@
+{
+  "input_file": "poi_data_final_v2.csv",
+  "calculated_poi_file": "poi_data_calculated_final.csv",
+  "walking_matrix_file": "walking_time_matrix_final.csv",
+  "utility_formula": {
+    "rating_norm": "2 * google_rating",
+    "review_norm": "10 * log10(review_count + 1) / log10(max_review_count + 1)",
+    "zone_score": {
+      "A": 10.0,
+      "B": 8.0,
+      "C": 6.0
+    },
+    "utility_score": "(rating_norm + review_norm + zone_score) / 3",
+    "formula_version": "U1_equal_rating_review_zone"
+  },
+  "walking_formula": {
+    "method": "Equirectangular straight-line distance approximation",
+    "earth_radius_metres": 6371000.0,
+    "walking_speed_metres_per_second": 1.4,
+    "walking_time": "distance_metres / 1.4 / 60"
+  },
+  "dataset_validation": {
+    "row_count": 50,
+    "poi_ids_exactly_1_to_50": true,
+    "rating_norm_mismatch_count": 0,
+    "review_norm_mismatch_count": 0,
+    "zone_score_mismatch_count": 0,
+    "utility_score_mismatch_count": 0,
+    "minimum_utility": 6.41298,
+    "maximum_utility": 9.8,
+    "passed": true
+  },
+  "matrix_validation": {
+    "matrix_shape": [
+      50,
+      50
+    ],
+    "expected_shape": [
+      50,
+      50
+    ],
+    "shape_valid": true,
+    "row_ids_exactly_1_to_50": true,
+    "column_ids_exactly_1_to_50": true,
+    "finite_values": true,
+    "negative_value_count": 0,
+    "zero_diagonal": true,
+    "zero_non_diagonal_count": 0,
+    "positive_non_diagonal": true,
+    "symmetric": true,
+    "maximum_asymmetry_minutes": 0.0,
+    "minimum_non_diagonal_minutes": 0.703535,
+    "maximum_non_diagonal_minutes": 187.587201,
+    "passed": true
+  },
+  "sha256": {
+    "input_poi_file": "0ff483a20c1b41e1772c7d3e6b2325da31d2d547bc031b307bb3d17f4585927d",
+    "calculated_poi_file": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+    "walking_matrix_file": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "planner": "Static Distance",
+  "condition": "normal",
+  "deterministic": true,
+  "start_poi_id": 1,
+  "route": [
+    1,
+    2,
+    5,
+    3,
+    4,
+    13
+  ],
+  "route_names": [
+    "Dataran Merdeka",
+    "Bangunan Sultan Abdul Samad",
+    "Kuala Lumpur City Gallery",
+    "Muzium Tekstil Negara",
+    "Muzium Negara",
+    "Menara Berkembar Petronas"
+  ],
+  "poi_count": 6,
+  "mandatory_poi_ids": [
+    1,
+    4,
+    13
+  ],
+  "mandatory_complete": true,
+  "feasible": true,
+  "failure_reason": null,
+  "finish_time": "16:46",
+  "total_travel_min": 61.333132,
+  "total_waiting_min": 0.0,
+  "total_visit_min": 405.0,
+  "total_time_used_min": 466.333132,
+  "total_cost_rm": 142.0,
+  "total_utility": 49.498101
+}

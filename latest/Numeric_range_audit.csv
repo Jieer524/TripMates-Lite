@@ -1,0 +1,8 @@
+Column,Minimum,Maximum,Non-numeric values,Out-of-range values,Status
+latitude,3.1015574,3.238054356,0,0,PASS
+longitude,101.68389,101.724434,0,0,PASS
+google_rating,3.7,4.8,0,0,PASS
+review_count,42.0,102926.0,0,0,PASS
+visit_duration_min,20.0,300.0,0,0,PASS
+indoor_ratio,0.0,0.9,0,0,PASS
+shelter_ratio,0.1,0.9,0,0,PASS
