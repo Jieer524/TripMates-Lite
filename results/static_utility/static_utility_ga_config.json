@@ -1,0 +1,9 @@
+{
+  "population_size": 80,
+  "maximum_generations": 120,
+  "tournament_size": 3,
+  "crossover_probability": 0.9,
+  "mutation_probability": 0.2,
+  "elitism_count": 2,
+  "stagnation_limit": 15
+}

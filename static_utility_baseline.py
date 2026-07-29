@@ -236,7 +236,7 @@ def main() -> None:
         print()
         print("=" * 90)
         print(
-            f"STATIC UTILITY — SEED {seed}"
+            f"STATIC UTILITY - SEED {seed}"
         )
         print("=" * 90)
 

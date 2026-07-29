@@ -1,0 +1,19 @@
+instance_id,scenario_id,scenario_name,trigger_variant,trigger_offset_min,trigger_absolute_min,trigger_clock,committed_component,current_poi_id,current_poi_requires_visit,replan_start_min,replan_start_clock,completed_poi_ids,original_remaining_poi_ids,remaining_mandatory_ids,unavailable_mandatory_ids,cost_spent_rm,utility_achieved,unavailable_poi_ids,thermal_multiplier,global_travel_multiplier,route_finished_before_trigger
+S1_early,S1,Heavy Rain,early,114,654,10:54,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.8,1.0,False
+S1_nominal,S1,Heavy Rain,nominal,120,660,11:00,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.8,1.0,False
+S1_late,S1,Heavy Rain,late,126,666,11:06,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.8,1.0,False
+S2_early,S2,Network-wide Movement Delay,early,86,626,10:26,visit,1,False,630.0,10:30,[1],"[2, 12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,8.808142,[],1.0,1.5,False
+S2_nominal,S2,Network-wide Movement Delay,nominal,90,630,10:30,walking_leg,2,True,631.41132,10:31,[1],"[2, 12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,8.808142,[],1.0,1.5,False
+S2_late,S2,Network-wide Movement Delay,late,95,635,10:35,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.0,1.5,False
+S3_early,S3,Attraction Closure,early,143,683,11:23,walking_leg,12,True,685.210223,11:25,"[1, 2]","[12, 4, 33, 34, 36, 13]",[4],[13],0.0,16.815625,[13],1.0,1.0,False
+S3_nominal,S3,Attraction Closure,nominal,150,690,11:30,visit,12,False,715.210223,11:55,"[1, 2, 12]","[4, 33, 34, 36, 13]",[4],[13],25.0,24.797303,[13],1.0,1.0,False
+S3_late,S3,Attraction Closure,late,158,698,11:38,visit,12,False,715.210223,11:55,"[1, 2, 12]","[4, 33, 34, 36, 13]",[4],[13],25.0,24.797303,[13],1.0,1.0,False
+S4_early,S4,Congestion,early,128,668,11:08,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.0,1.0,False
+S4_nominal,S4,Congestion,nominal,135,675,11:15,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.0,1.0,False
+S4_late,S4,Congestion,late,142,682,11:22,walking_leg,12,True,685.210223,11:25,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[],1.0,1.0,False
+S5_early,S5,Heatwave,early,171,711,11:51,visit,12,False,715.210223,11:55,"[1, 2, 12]","[4, 33, 34, 36, 13]","[4, 13]",[],25.0,24.797303,[],2.0,1.0,False
+S5_nominal,S5,Heatwave,nominal,180,720,12:00,walking_leg,4,True,725.4978490000001,12:05,"[1, 2, 12]","[4, 33, 34, 36, 13]","[4, 13]",[],25.0,24.797303,[],2.0,1.0,False
+S5_late,S5,Heatwave,late,189,729,12:09,visit,4,False,815.4978490000001,13:35,"[1, 2, 12, 4]","[33, 34, 36, 13]",[13],[],30.0,33.097967,[],2.0,1.0,False
+S6_early,S6,Combined,early,114,654,10:54,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[34],1.8,1.3,False
+S6_nominal,S6,Combined,nominal,120,660,11:00,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[34],1.8,1.3,False
+S6_late,S6,Combined,late,126,666,11:06,visit,2,False,676.41132,11:16,"[1, 2]","[12, 4, 33, 34, 36, 13]","[4, 13]",[],0.0,16.815625,[34],1.8,1.3,False
