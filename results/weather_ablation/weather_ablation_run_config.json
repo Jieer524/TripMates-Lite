@@ -1,0 +1,46 @@
+{
+  "experiment": "Thermal-awareness ablation",
+  "planners": [
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "weather_instance_ids": [
+    "S1_early",
+    "S1_nominal",
+    "S1_late",
+    "S5_early",
+    "S5_nominal",
+    "S5_late",
+    "S6_early",
+    "S6_nominal",
+    "S6_late"
+  ],
+  "paired_result_count": 90,
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "poi_file": "poi_data_calculated_final.csv",
+  "matrix_file": "walking_time_matrix_final.csv",
+  "initial_routes_file": "results\\static_utility\\initial_routes_by_seed.json",
+  "total_runtime_seconds": 1310.4918690000195,
+  "note": "Seeds measure stochastic GA stability. They are not treated as independent real-world disruption events."
+}
