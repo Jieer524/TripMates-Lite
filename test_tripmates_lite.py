@@ -95,37 +95,67 @@ def prepare_case(
         ),
     )
 
+    if not initial_schedule.feasible:
+        raise RuntimeError(
+            "Initial Static Utility route "
+            "is infeasible."
+        )
+
     scenario_instance = (
         get_instance(instance_id)
     )
 
     state = simulate_replanning_state(
         data=data,
-        initial_schedule=(
-            initial_schedule
-        ),
-        scenario_instance=(
-            scenario_instance
-        ),
+        initial_schedule=initial_schedule,
+        scenario_instance=scenario_instance,
     )
 
-    problem = prepare_adaptive_problem(
-        data=data,
-        initial_schedule=(
-            initial_schedule
-        ),
-        state=state,
-        scenario_instance=(
-            scenario_instance
-        ),
+    adaptive_problem = (
+        prepare_adaptive_problem(
+            data=data,
+            initial_schedule=initial_schedule,
+            state=state,
+            scenario_instance=scenario_instance,
+            thermal_aware_candidate_window=False,
+        )
     )
+
+    tripmates_problem = (
+        prepare_adaptive_problem(
+            data=data,
+            initial_schedule=initial_schedule,
+            state=state,
+            scenario_instance=scenario_instance,
+            thermal_aware_candidate_window=True,
+        )
+    )
+
+    # Confirm that the correct mode was assigned.
+    if (
+        adaptive_problem
+        .thermal_aware_candidate_window
+    ):
+        raise RuntimeError(
+            "Adaptive Without Thermal incorrectly "
+            "uses a thermal candidate window."
+        )
+
+    if not (
+        tripmates_problem
+        .thermal_aware_candidate_window
+    ):
+        raise RuntimeError(
+            "TripMates Lite did not receive "
+            "a thermal-aware candidate window."
+        )
 
     return (
         initial_schedule,
         state,
-        problem,
+        adaptive_problem,
+        tripmates_problem,
     )
-
 
 def print_metrics(
     name: str,
@@ -205,7 +235,8 @@ def main() -> None:
     (
         initial_schedule,
         state,
-        problem,
+        adaptive_problem,
+        tripmates_problem,
     ) = prepare_case(
         data=data,
         initial_route=initial_route,
@@ -215,7 +246,7 @@ def main() -> None:
     no_thermal = (
         run_adaptive_without_thermal_ga(
             data=data,
-            problem=problem,
+            problem=adaptive_problem,
             seed=TEST_SEED,
             config=(
                 REPLANNING_GA_CONFIG
@@ -229,7 +260,7 @@ def main() -> None:
             initial_schedule=(
                 initial_schedule
             ),
-            problem=problem,
+            problem=tripmates_problem,
             seed=TEST_SEED,
             config=(
                 REPLANNING_GA_CONFIG
@@ -297,7 +328,8 @@ def main() -> None:
     (
         initial_schedule,
         state,
-        problem,
+        adaptive_problem,
+        tripmates_problem,
     ) = prepare_case(
         data=data,
         initial_route=initial_route,
@@ -307,7 +339,7 @@ def main() -> None:
     no_thermal = (
         run_adaptive_without_thermal_ga(
             data=data,
-            problem=problem,
+            problem=adaptive_problem,
             seed=TEST_SEED,
             config=(
                 REPLANNING_GA_CONFIG
@@ -321,7 +353,7 @@ def main() -> None:
             initial_schedule=(
                 initial_schedule
             ),
-            problem=problem,
+            problem=tripmates_problem,
             seed=TEST_SEED,
             config=(
                 REPLANNING_GA_CONFIG
@@ -349,7 +381,7 @@ def main() -> None:
                 .schedule
             ),
             thermal_multiplier=(
-                problem
+                adaptive_problem
                 .scenario_instance
                 .scenario
                 .thermal_multiplier
@@ -370,12 +402,36 @@ def main() -> None:
     print("=" * 100)
 
     print(
-        "Shared candidate window:",
+        "Adaptive candidate window:",
         list(
-            problem
+            adaptive_problem
             .candidate_window
             .all_candidate_ids
         ),
+    )
+
+    print(
+        "TripMates candidate window:",
+        list(
+            tripmates_problem
+            .candidate_window
+            .all_candidate_ids
+        ),
+    )
+
+    candidate_windows_differ = (
+        adaptive_problem
+        .candidate_window
+        .all_candidate_ids
+        !=
+        tripmates_problem
+        .candidate_window
+        .all_candidate_ids
+    )
+
+    print(
+        "Candidate windows differ:",
+        candidate_windows_differ,
     )
 
     print_metrics(

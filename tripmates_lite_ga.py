@@ -508,6 +508,18 @@ def run_tripmates_lite_ga(
         1.0,
         abs_tol=1e-12,
     ):
+
+        if (
+            thermal_multiplier > 1.0
+            and not problem
+            .thermal_aware_candidate_window
+        ):
+            raise ValueError(
+                "TripMates Lite requires the "
+                "thermal-aware candidate window "
+                "when the thermal objective is active."
+            )
+
         non_thermal_result = (
             run_adaptive_without_thermal_ga(
                 data=data,

@@ -1,23 +1,21 @@
 """
-Shared bounded-replanning Genetic Algorithm.
+Build a maximum-10-POI candidate window.
 
-This module is shared by:
+Both planners use the same size, feasibility rules and mandatory
+handling.
 
-1. Adaptive Without Thermal
-2. TripMates Lite
+Adaptive Without Thermal ranks optional candidates using:
 
-Both planners use exactly the same:
+    U / (travel + visit)
 
-- candidate window;
-- initial populations;
-- chromosome representation;
-- decoder;
-- GA parameters;
-- feasibility rules;
-- random seeds.
+TripMates Lite ranks optional candidates using:
 
-TripMates Lite will later differ only through WES Pareto ranking
-and thermal final-route selection.
+    U / (
+        travel
+        + visit
+        + additional walking exposure
+        + additional visit exposure
+    )
 """
 
 from __future__ import annotations
@@ -86,7 +84,6 @@ class CandidateWindow:
         ...
     ]
 
-
 @dataclass(frozen=True)
 class AdaptiveProblem:
     state: ReplanningState
@@ -99,7 +96,8 @@ class AdaptiveProblem:
     locked_completed_count: int
     locked_utility: float
 
-
+    thermal_aware_candidate_window: bool = False
+    
 @dataclass(frozen=True)
 class AdaptiveGARunResult:
     seed: int
@@ -377,14 +375,25 @@ def calculate_prescreen_score(
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
     candidate_poi_id: int,
+    *,
+    thermal_aware: bool,
 ) -> float:
     """
-    Shared non-thermal pre-screen score:
+    Adaptive Without Thermal:
 
-        score_j = U_j / (T_ij + V_j)
+        U_j / (T_ij + V_j)
 
-    This same score must be used by both adaptive planners so that
-    WES remains the only thermal ablation difference.
+    TripMates Lite:
+
+        U_j /
+        (T_ij + V_j + Ewalk_ij + Evisit_j)
+
+    where:
+
+        Ewalk_ij = T_ij(M_s - 1)
+
+        Evisit_j =
+            V_j(1 - I_j)(1 - S_j)(M_s - 1)
     """
 
     poi = data.pois[
@@ -414,10 +423,48 @@ def calculate_prescreen_score(
             base_travel_min,
         )
 
+    visit_min = (
+        poi.visit_duration_min
+    )
+
     denominator = (
         travel_min
-        + poi.visit_duration_min
+        + visit_min
     )
+
+    if thermal_aware:
+        thermal_multiplier = (
+            scenario_instance
+            .scenario
+            .thermal_multiplier
+        )
+
+        exposed_fraction = (
+            (1.0 - poi.indoor_ratio)
+            * (1.0 - poi.shelter_ratio)
+        )
+
+        additional_walking_exposure = (
+            travel_min
+            * (
+                thermal_multiplier
+                - 1.0
+            )
+        )
+
+        additional_visit_exposure = (
+            visit_min
+            * exposed_fraction
+            * (
+                thermal_multiplier
+                - 1.0
+            )
+        )
+
+        denominator += (
+            additional_walking_exposure
+            + additional_visit_exposure
+        )
 
     if denominator <= 0:
         raise ValueError(
@@ -430,12 +477,13 @@ def calculate_prescreen_score(
         / denominator
     )
 
-
 def build_shared_candidate_window(
     data: PlanningData,
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
     mandatory_backbone: tuple[int, ...],
+    *,
+    thermal_aware: bool,
 ) -> CandidateWindow:
     """
     Build a maximum-10-POI candidate window.
@@ -532,6 +580,9 @@ def build_shared_candidate_window(
             candidate_poi_id=(
                 candidate_poi_id
             ),
+            thermal_aware=(
+                thermal_aware
+            ),
         )
 
         score_lookup[
@@ -619,6 +670,8 @@ def prepare_adaptive_problem(
     initial_schedule: ScheduleResult,
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
+    *,
+    thermal_aware_candidate_window: bool = False,
 ) -> AdaptiveProblem:
     mandatory_backbone = (
         build_remaining_mandatory_backbone(
@@ -639,6 +692,9 @@ def prepare_adaptive_problem(
             ),
             mandatory_backbone=(
                 mandatory_backbone
+            ),
+            thermal_aware=(
+                thermal_aware_candidate_window
             ),
         )
     )
@@ -678,8 +734,11 @@ def prepare_adaptive_problem(
         locked_utility=(
             state.utility_achieved
         ),
-    )
 
+        thermal_aware_candidate_window=(
+            thermal_aware_candidate_window
+        ),
+    )
 
 # ================================================================
 # Adaptive chromosome decoder
