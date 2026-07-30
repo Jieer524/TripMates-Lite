@@ -1,9 +1,0 @@
-Check,Result,Status
-Row count,50,PASS
-Column count,31,INFO
-Exact duplicate rows,0,PASS
-Missing/non-numeric poi_id,0,PASS
-Duplicate poi_id,0,PASS
-poi_id exactly 1–50,True,PASS
-Blank name,0,PASS
-Duplicate normalised name,0,PASS
