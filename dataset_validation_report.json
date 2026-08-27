@@ -1,41 +1,167 @@
 {
-  "input_file": "poi_data_final_v2.csv",
-  "calculated_poi_file": "poi_data_calculated_final.csv",
-  "walking_matrix_file": "walking_time_matrix_final.csv",
-  "utility_formula": {
-    "rating_norm": "2 * google_rating",
-    "review_norm": "10 * log10(review_count + 1) / log10(max_review_count + 1)",
-    "zone_score": {
-      "A": 10.0,
-      "B": 8.0,
-      "C": 6.0
+  "validation_metadata": {
+    "report_version": "2.0.0",
+    "validation_timestamp_utc": "2026-08-27T12:40:41.081835+00:00",
+    "repository": {
+      "url": "https://github.com/Jieer524/TripMates-Lite",
+      "branch": "main",
+      "validation_commit_sha": "f81508892332f2b0f8cb6504c0ae7bcd3e04a88e",
+      "source_dataset_commit_sha": "b38ee40500978f3f5a02ec6f0814de8b6ff326a1",
+      "source_dataset_git_path": "latest/poi_data_final_v2.csv"
     },
-    "utility_score": "(rating_norm + review_norm + zone_score) / 3",
-    "formula_version": "U1_equal_rating_review_zone"
+    "environment": {
+      "python_version": "3.11.9",
+      "pandas_version": "3.0.3",
+      "numpy_version": "2.4.6",
+      "operating_system": "Windows-10-10.0.26200-SP0"
+    }
   },
-  "walking_formula": {
-    "method": "Equirectangular straight-line distance approximation",
-    "earth_radius_metres": 6371000.0,
-    "walking_speed_metres_per_second": 1.4,
-    "walking_time": "distance_metres / 1.4 / 60"
+  "input_files": {
+    "input_file": "poi_data_final_v2.csv",
+    "calculated_poi_file": "poi_data_calculated_final.csv",
+    "walking_matrix_file": "walking_time_matrix_final.csv"
+  },
+  "formula_configuration": {
+    "utility_formula": {
+      "rating_norm": "2 * google_rating",
+      "review_norm": "10 * log10(review_count + 1) / log10(max_review_count + 1)",
+      "zone_score": {
+        "A": 10.0,
+        "B": 8.0,
+        "C": 6.0
+      },
+      "utility_score": "(rating_norm + review_norm + zone_score) / 3",
+      "formula_version": "U1_equal_rating_review_zone"
+    },
+    "walking_formula": {
+      "method": "Equirectangular straight-line distance approximation",
+      "earth_radius_metres": 6371000.0,
+      "walking_speed_metres_per_second": 1.4,
+      "walking_time": "distance_metres / 1.4 / 60",
+      "matrix_stored_decimal_places": 6
+    },
+    "numerical_tolerances": {
+      "utility_tolerance": 1e-06,
+      "matrix_exact_tolerance_minutes": 1e-06,
+      "matrix_rounded_coordinate_tolerance_minutes": 0.002
+    }
+  },
+  "schema_validation": {
+    "row_count": 50,
+    "expected_row_count": 50,
+    "missing_ids": [],
+    "duplicate_ids": [],
+    "unexpected_ids": [],
+    "missing_planner_columns": [],
+    "missing_values": {
+      "poi_id": 0,
+      "name": 0,
+      "category": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "zone": 0,
+      "mandatory": 0,
+      "off_day": 0,
+      "is_24_hours": 0,
+      "opening_time_24h": 0,
+      "closing_time_24h": 0,
+      "closes_next_day": 0,
+      "google_rating": 0,
+      "review_count": 0,
+      "metadata_source": 0,
+      "metadata_collected_date": 0,
+      "source_url": 0,
+      "visit_duration_min": 0,
+      "visit_duration_class": 0,
+      "visit_duration_basis": 0,
+      "admission_cost_rm": 0,
+      "cost_source_url": 0,
+      "cost_verified_date": 0,
+      "indoor_ratio": 0,
+      "shelter_ratio": 0,
+      "exposure_ratio_basis": 0,
+      "rating_norm": 0,
+      "review_norm": 0,
+      "zone_score": 0,
+      "utility_score": 0,
+      "utility_formula_version": 0
+    }
   },
   "dataset_validation": {
-    "row_count": 50,
-    "poi_ids_exactly_1_to_50": true,
-    "rating_norm_mismatch_count": 0,
-    "review_norm_mismatch_count": 0,
-    "zone_score_mismatch_count": 0,
-    "utility_score_mismatch_count": 0,
-    "minimum_utility": 6.41298,
-    "maximum_utility": 9.8,
+    "coordinates": {
+      "invalid_latitude_count": 0,
+      "invalid_longitude_count": 0,
+      "kl_latitude_outside_expected_range": 0,
+      "kl_longitude_outside_expected_range": 0
+    },
+    "rating": {
+      "invalid_range_count": 0,
+      "rating_norm_mismatch_count": 0,
+      "rating_norm_max_difference": 0.0
+    },
+    "review_count": {
+      "invalid_count": 0,
+      "maximum_review_count": 102926.0,
+      "review_norm_mismatch_count": 0,
+      "review_norm_max_difference": 4.874315484570957e-07
+    },
+    "zone": {
+      "invalid_zones": [],
+      "zone_score_mismatch_count": 0,
+      "zone_score_max_difference": 0.0
+    },
+    "utility": {
+      "utility_score_mismatch_count": 0,
+      "utility_score_max_difference": 4.958105161989579e-07,
+      "minimum_utility": 6.41298,
+      "maximum_utility": 9.8
+    },
+    "visit_duration": {
+      "invalid_count": 0,
+      "minimum_minutes": 20.0,
+      "maximum_minutes": 300.0
+    },
+    "admission_cost": {
+      "invalid_count": 0,
+      "minimum_rm": 0.0,
+      "maximum_rm": 127.0,
+      "project_budget_rm": 160.0,
+      "exceeding_budget": []
+    },
+    "opening_hours": {
+      "error_count": 0,
+      "errors": []
+    },
+    "exposure_ratios": {
+      "indoor_invalid_count": 0,
+      "shelter_invalid_count": 0
+    },
     "passed": true
   },
+  "derived_asset_validation": {
+    "source_available": true,
+    "row_count_match": true,
+    "poi_id_exact_match": true,
+    "coordinate_rounding": {
+      "latitude_max_difference": 5.00000000069889e-07,
+      "longitude_max_difference": 4.999999987376214e-07
+    },
+    "rating_norm_max_difference": 0.0,
+    "review_norm_max_difference": 0.0,
+    "zone_score_max_difference": 0.0,
+    "utility_score_max_difference": 0.0
+  },
   "matrix_validation": {
-    "matrix_shape": [
+    "csv_storage_shape": [
+      50,
+      51
+    ],
+    "csv_storage_format": "poi_id column + 50 numeric POI columns",
+    "actual_matrix_shape": [
       50,
       50
     ],
-    "expected_shape": [
+    "expected_matrix_shape": [
       50,
       50
     ],
@@ -43,19 +169,61 @@
     "row_ids_exactly_1_to_50": true,
     "column_ids_exactly_1_to_50": true,
     "finite_values": true,
+    "nan_count": 0,
+    "infinity_count": 0,
     "negative_value_count": 0,
     "zero_diagonal": true,
-    "zero_non_diagonal_count": 0,
+    "maximum_diagonal_absolute_value": 0.0,
     "positive_non_diagonal": true,
-    "symmetric": true,
-    "maximum_asymmetry_minutes": 0.0,
+    "zero_non_diagonal_count": 0,
     "minimum_non_diagonal_minutes": 0.703535,
     "maximum_non_diagonal_minutes": 187.587201,
+    "symmetric": true,
+    "maximum_asymmetry_minutes": 0.0,
+    "asymmetric_pairs_count": 0,
     "passed": true
   },
-  "sha256": {
-    "input_poi_file": "0ff483a20c1b41e1772c7d3e6b2325da31d2d547bc031b307bb3d17f4585927d",
-    "calculated_poi_file": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
-    "walking_matrix_file": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f"
+  "matrix_formula_validation": {
+    "primary_original_coordinates": {
+      "coordinate_source": "Original high-precision POI coordinates",
+      "maximum_absolute_difference_minutes": 0.0,
+      "mean_absolute_difference_minutes": 0.0,
+      "maximum_absolute_difference_seconds": 0.0,
+      "mismatch_count": 0,
+      "tolerance_minutes": 1e-06,
+      "status": "PASS",
+      "interpretation": "Primary verification of the walking-time formula. The stored matrix should reproduce the documented equirectangular calculation from the original high-precision coordinates."
+    },
+    "secondary_final_csv_coordinates": {
+      "coordinate_source": "Coordinates stored in final calculated POI CSV",
+      "maximum_absolute_difference_minutes": 0.0013899999999988921,
+      "mean_absolute_difference_minutes": 0.00043017039999997185,
+      "maximum_absolute_difference_seconds": 0.08339999999993353,
+      "mismatch_count": 0,
+      "tolerance_minutes": 0.002,
+      "status": "PASS",
+      "coordinate_storage_precision": "6 decimal places",
+      "interpretation": "This secondary check measures the numerical effect of coordinate rounding in the final CSV. Small differences are expected because the stored CSV coordinates have lower precision than the original source coordinates."
+    }
+  },
+  "cross_file_validation": {
+    "calculated_poi_ids_match_expected": true,
+    "matrix_row_ids_match_poi_catalogue": true,
+    "matrix_column_ids_match_poi_catalogue": true,
+    "matrix_dimensions_match_catalogue": true
+  },
+  "file_integrity": {
+    "sha256": {
+      "poi_data_calculated_final.csv": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "walking_time_matrix_final.csv": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "original_poi_file_git_source": "9158c41cc049d79293398368bf5b8f8f25563d7a5d6914c55abb3e9345baf778"
+    }
+  },
+  "overall_validation": {
+    "passed": true,
+    "failed_checks": [],
+    "warnings": [
+      "The secondary matrix formula check uses 6-decimal-place coordinates from the final CSV. Its small numerical difference is evaluated using the documented rounding tolerance."
+    ]
   }
 }
