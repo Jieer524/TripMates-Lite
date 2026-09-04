@@ -1,19 +1,19 @@
 {
   "validation_metadata": {
     "report_version": "2.0.0",
-    "validation_timestamp_utc": "2026-08-27T12:40:41.081835+00:00",
+    "validation_timestamp_utc": "2026-09-04T16:05:02.421663+00:00",
     "repository": {
       "url": "https://github.com/Jieer524/TripMates-Lite",
       "branch": "main",
-      "validation_commit_sha": "f81508892332f2b0f8cb6504c0ae7bcd3e04a88e",
+      "validation_commit_sha": "9f3429f228cc32506e862cfcf0141ccc0e61f891",
       "source_dataset_commit_sha": "b38ee40500978f3f5a02ec6f0814de8b6ff326a1",
       "source_dataset_git_path": "latest/poi_data_final_v2.csv"
     },
     "environment": {
-      "python_version": "3.11.9",
-      "pandas_version": "3.0.3",
-      "numpy_version": "2.4.6",
-      "operating_system": "Windows-10-10.0.26200-SP0"
+      "python_version": "3.12.14",
+      "pandas_version": "3.0.1",
+      "numpy_version": "2.3.5",
+      "operating_system": "Windows-11-10.0.26200-SP0"
     }
   },
   "input_files": {
