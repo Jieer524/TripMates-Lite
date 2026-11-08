@@ -1,0 +1,16 @@
+density_level,planner,feasible,achieved_utility,retained_poi_count,original_poi_retention,wes,total_travel_min,changed_activity_count,edit_distance_score,runtime_seconds
+dense,Adaptive Without Thermal,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,0.504028
+dense,Greedy Repair,1.0,58.15198,5.0,0.875,427.595396,102.922176,6.0,4.75,0.002928
+dense,Static Distance,1.0,49.498101,4.0,1.0,311.875117,61.333132,0.0,0.0,6.9e-05
+dense,Static Utility,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,6.4e-05
+dense,TripMates Lite,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,1.080188
+moderate,Adaptive Without Thermal,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,0.501067
+moderate,Greedy Repair,1.0,58.15198,5.0,0.875,427.595396,102.922176,6.0,4.75,0.003059
+moderate,Static Distance,1.0,49.498101,4.0,1.0,311.875117,61.333132,0.0,0.0,7.2e-05
+moderate,Static Utility,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,6.7e-05
+moderate,TripMates Lite,1.0,66.96204,6.0,1.0,384.719112,66.502018,0.0,0.0,1.094009
+relaxed,Adaptive Without Thermal,1.0,61.024279,1.0,1.0,387.532322,72.073823,5.0,4.25,0.501143
+relaxed,Greedy Repair,1.0,58.954557,1.0,1.0,367.368497,91.171698,5.0,4.25,0.002216
+relaxed,Static Distance,1.0,49.498101,4.0,1.0,311.875117,61.333132,0.0,0.0,8e-05
+relaxed,Static Utility,1.0,26.908806,1.0,1.0,202.807169,60.248738,0.0,0.0,4.2e-05
+relaxed,TripMates Lite,1.0,58.980362,1.0,1.0,358.554858,68.725232,5.0,4.25,1.590657

@@ -1,0 +1,16 @@
+planner,setting,instance_id,seed,repetition,failed,engine_only_seconds,preparation_seconds,end_to_end_request_seconds
+Greedy Repair,deterministic_no_ga,S1_nominal,1001,0,False,0.004667300,0.002417500,0.007084800
+Greedy Repair,deterministic_no_ga,S1_nominal,1001,1,False,0.005505400,0.002400400,0.007905800
+Greedy Repair,deterministic_no_ga,S1_nominal,1001,2,False,0.004730400,0.002481600,0.007212000
+Adaptive Without Thermal,research_benchmark,S1_nominal,1001,0,False,2.069882600,0.006589800,2.076472400
+Adaptive Without Thermal,research_benchmark,S1_nominal,1001,1,False,2.090853500,0.006394800,2.097248300
+Adaptive Without Thermal,research_benchmark,S1_nominal,1001,2,False,2.077669700,0.006775000,2.084444700
+Adaptive Without Thermal,quick_preview,S1_nominal,1001,0,False,0.270662300,0.006260400,0.276922700
+Adaptive Without Thermal,quick_preview,S1_nominal,1001,1,False,0.276652200,0.006563800,0.283216000
+Adaptive Without Thermal,quick_preview,S1_nominal,1001,2,False,0.270618400,0.006798300,0.277416700
+TripMates Lite,research_benchmark,S1_nominal,1001,0,False,5.034092500,0.006636000,5.040728500
+TripMates Lite,research_benchmark,S1_nominal,1001,1,False,5.611557700,0.012320200,5.623877900
+TripMates Lite,research_benchmark,S1_nominal,1001,2,False,4.644757300,0.006717900,4.651475200
+TripMates Lite,quick_preview,S1_nominal,1001,0,False,0.512225300,0.008067300,0.520292600
+TripMates Lite,quick_preview,S1_nominal,1001,1,False,0.523009700,0.006598700,0.529608400
+TripMates Lite,quick_preview,S1_nominal,1001,2,False,0.526100800,0.006855800,0.532956600

@@ -108,6 +108,67 @@ class ScenarioDefinition:
         )
 
 
+# ================================================================
+# Cached travel adjustments
+# ================================================================
+#
+# ScenarioDefinition.build_travel_adjustments is deterministic for a
+# fixed (scenario, planning data) pair.  Congestion scenarios rebuild
+# a full POI-to-POI link table (up to 50 x 50 entries) on every call,
+# and the adaptive decoders call it once per candidate insertion.
+# The memo below reuses the identical immutable TravelAdjustments
+# object instead of rebuilding it.  It never changes the returned
+# value, so route selection and metrics are unaffected.
+#
+# The data reference is stored alongside the key so that a recycled
+# object id can never return a stale entry.
+
+_TRAVEL_ADJUSTMENT_CACHE: dict[
+    tuple[int, str],
+    TravelAdjustments,
+] = {}
+
+_TRAVEL_ADJUSTMENT_DATA_REFS: dict[int, object] = {}
+
+
+def get_travel_adjustments(
+    data: PlanningData,
+    scenario_definition: ScenarioDefinition,
+) -> TravelAdjustments:
+    """Return the memoised post-trigger travel adjustments."""
+
+    data_key = id(data)
+    cache_key = (
+        data_key,
+        scenario_definition.scenario_id,
+    )
+
+    cached = _TRAVEL_ADJUSTMENT_CACHE.get(
+        cache_key
+    )
+
+    if (
+        cached is not None
+        and _TRAVEL_ADJUSTMENT_DATA_REFS.get(
+            data_key
+        )
+        is data
+    ):
+        return cached
+
+    adjustments = (
+        scenario_definition
+        .build_travel_adjustments(data)
+    )
+
+    _TRAVEL_ADJUSTMENT_DATA_REFS[data_key] = data
+    _TRAVEL_ADJUSTMENT_CACHE[cache_key] = (
+        adjustments
+    )
+
+    return adjustments
+
+
 SCENARIOS: dict[str, ScenarioDefinition] = {
     "S1": ScenarioDefinition(
         scenario_id="S1",
@@ -244,6 +305,8 @@ def calculate_trigger_offset(
 
 
 def build_scenario_instances(
+    *,
+    trip_start_min: int = TRIP_START_MIN,
 ) -> tuple[ScenarioInstance, ...]:
     instances: list[ScenarioInstance] = []
 
@@ -266,7 +329,7 @@ def build_scenario_instances(
                     trigger_variant=variant,
                     trigger_offset_min=offset,
                     trigger_absolute_min=(
-                        TRIP_START_MIN
+                        trip_start_min
                         + offset
                     ),
                 )
@@ -341,6 +404,14 @@ def simulate_replanning_state(
        trigger from the POI at which the traveller is waiting.
     5. Post-trigger closures and travel multipliers apply only
        to the unfinished route.
+    6. If the trigger precedes the first activity, nothing is
+       committed: the traveller is still at the origin and the
+       whole itinerary is the modifiable suffix.
+
+    A trigger that falls strictly inside the itinerary timeline must
+    match exactly one of rules 1-4; if it matches none, the schedule
+    and the trigger are inconsistent and a ``RuntimeError`` is raised
+    rather than guessing.
     """
 
     if not initial_schedule.feasible:
@@ -386,7 +457,24 @@ def simulate_replanning_state(
 
     tolerance = 1e-9
 
-    for index, entry in enumerate(entries):
+    # The itinerary start time is recovered from the schedule itself
+    # (``finish_min - time_used_min``) so the simulator does not need a
+    # second copy of the trip-start constant.
+    trip_start_min = float(
+        initial_schedule.finish_min
+        - initial_schedule.time_used_min
+    )
+
+    # A disruption strictly before the first activity commits nothing.
+    # The traveller is still standing at the origin and has not started
+    # the first visit, so the entire itinerary remains modifiable.
+    pre_start_trigger = (
+        trigger_min < trip_start_min - tolerance
+    )
+
+    for index, entry in enumerate(
+        () if pre_start_trigger else entries
+    ):
         # The visit was fully completed before or exactly
         # at the trigger.
         if (
@@ -514,22 +602,38 @@ def simulate_replanning_state(
         )
 
     else:
-        # Every planned visit was completed before the trigger.
-        route_finished = True
+        if pre_start_trigger:
+            # Rule 6: nothing is completed, the origin has not been
+            # visited yet, and replanning starts at the trigger.
+            current_poi_id = (
+                initial_schedule.start_poi_id
+            )
 
-        current_poi_id = (
-            entries[-1].poi_id
-        )
+            current_poi_requires_visit = True
 
-        current_poi_requires_visit = False
+            replan_start_min = float(
+                trigger_min
+            )
 
-        replan_start_min = float(
-            trigger_min
-        )
+            remaining_start_index = 0
 
-        remaining_start_index = len(
-            entries
-        )
+        else:
+            # Every planned visit was completed before the trigger.
+            route_finished = True
+
+            current_poi_id = (
+                entries[-1].poi_id
+            )
+
+            current_poi_requires_visit = False
+
+            replan_start_min = float(
+                trigger_min
+            )
+
+            remaining_start_index = len(
+                entries
+            )
 
     completed_poi_ids = tuple(
         entry.poi_id

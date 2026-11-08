@@ -1,12 +1,14 @@
-"""
-Outdoor-exposure calculations for TripMates Lite.
+"""Transparent thermal-exposure proxy calculations.
 
-The scenario multiplier applies only from the trigger onwards.
-This includes the post-trigger portion of an already committed
-walking leg or POI visit.
-
-Waiting time is not included because the Chapter 3 exposure model
-contains walking exposure and POI visit exposure only.
+WES is a planning proxy, not a medical, physiological, or health-risk
+model.  For POI ``j`` the exposed fraction is
+``x_j = (1 - indoor_ratio_j) * (1 - shelter_ratio_j)``. Walking exposure
+is walking minutes; visit exposure is ``visit_minutes * x_j``. Waiting is
+excluded by default and is recorded separately; callers may opt in to
+``waiting_minutes * waiting_exposed_fraction`` explicitly. For an
+interval ``[a,b]`` and trigger ``t``, weighted exposure is
+``overlap([a,b], before t) + M * overlap([a,b], after t)``. Thus
+``WES = pre_trigger_exposure + M * post_trigger_exposure``.
 """
 
 from __future__ import annotations
@@ -42,6 +44,14 @@ class ExposureMetrics:
 
     weather_weighted_exposure_score: float
     thermal_multiplier: float
+    waiting_exposure_min: float = 0.0
+    high_heat_outdoor_exposure_min: float = 0.0
+    maximum_continuous_outdoor_exposure_min: float = 0.0
+    exposure_during_travel_min: float = 0.0
+    exposure_during_visits_min: float = 0.0
+    exposure_during_waiting_min: float = 0.0
+    weather_source: str = "scenario"
+    weather_fallback_reason: str | None = None
 
 
 def calculate_exposed_fraction(
@@ -377,12 +387,48 @@ def calculate_repaired_exposure(
     )
 
 
+def _maximum_continuous_exposure(
+    data: PlanningData,
+    schedule: ScheduleResult,
+    *,
+    include_waiting: bool = False,
+) -> float:
+    """Return the longest contiguous exposed activity run in minutes.
+
+    This is a schedule-continuity proxy. Gaps, indoor visits, and excluded
+    waiting break the run; it does not infer a physiological threshold.
+    """
+    best = current = 0.0
+    previous_end = None
+    for entry in schedule.entries:
+        travel = max(0.0, entry.travel_min)
+        waiting = entry.waiting_min if include_waiting else 0.0
+        poi = data.pois[entry.poi_id]
+        visit = entry.visit_duration_min * calculate_exposed_fraction(
+            poi.indoor_ratio, poi.shelter_ratio
+        )
+        segments = (travel, waiting, visit)
+        for duration in segments:
+            if duration > 0:
+                current += duration
+                best = max(best, current)
+            else:
+                current = 0.0
+        previous_end = entry.visit_end_min
+    return best
+
+
 def calculate_exposure_metrics(
     data: PlanningData,
     initial_schedule: ScheduleResult,
     state: ReplanningState,
     repaired_schedule: ScheduleResult,
     thermal_multiplier: float,
+    *,
+    include_waiting: bool = False,
+    waiting_exposed_fraction: float = 0.0,
+    weather_source: str = "scenario",
+    weather_fallback_reason: str | None = None,
 ) -> ExposureMetrics:
     """
     Calculate:
@@ -444,6 +490,15 @@ def calculate_exposure_metrics(
         + repaired_weighted_exposure
     )
 
+    waiting_exposure = 0.0
+    if include_waiting:
+        if not 0.0 <= waiting_exposed_fraction <= 1.0:
+            raise ValueError("waiting_exposed_fraction must be between 0 and 1")
+        waiting_exposure = (
+            initial_schedule.total_waiting_min
+            + repaired_schedule.total_waiting_min
+        ) * waiting_exposed_fraction
+
     return ExposureMetrics(
         prefix_walking_min=(
             prefix.outdoor_walking_min
@@ -480,4 +535,16 @@ def calculate_exposure_metrics(
         thermal_multiplier=(
             thermal_multiplier
         ),
+        waiting_exposure_min=waiting_exposure,
+        high_heat_outdoor_exposure_min=(
+            total_outdoor_exposure if thermal_multiplier >= 1.8 else 0.0
+        ),
+        maximum_continuous_outdoor_exposure_min=(
+            _maximum_continuous_exposure(data, repaired_schedule, include_waiting=include_waiting)
+        ),
+        exposure_during_travel_min=outdoor_walking,
+        exposure_during_visits_min=outdoor_visit,
+        exposure_during_waiting_min=waiting_exposure,
+        weather_source=weather_source,
+        weather_fallback_reason=weather_fallback_reason,
     )

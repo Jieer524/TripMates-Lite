@@ -1,0 +1,81 @@
+{
+  "alpha": 0.05,
+  "alpha_independence_note": "The analysed run pins every internal GA decision to one frozen policy, so only the final route selection depends on alpha. Paired differences therefore reflect the final-selection policy alone.",
+  "alphas": [
+    1.0,
+    0.95,
+    0.9,
+    0.85
+  ],
+  "analysis": "C2 thermal trade-off sensitivity - paired tests",
+  "any_alpha_significant_at_0_05": true,
+  "classification": "exploratory sensitivity analysis",
+  "conclusion": "At least one alpha-level WES difference is significant at 0.05 before/after adjustment; see the per-alpha table.",
+  "effect_size": "matched-pairs rank-biserial correlation",
+  "final_selection_policy_mode": "alpha_sensitive_exploratory",
+  "input_directory": "results/thermal_tradeoff_sensitivity_alpha_independent_v2",
+  "instance_count": 9,
+  "is_confirmatory": false,
+  "multiple_comparison_policy": "Holm step-down across the four alpha-level primary WES tests",
+  "original_result_note": "The frozen 90-pair thermal ablation remains the confirmatory fixed-policy result and is not replaced by this sensitivity analysis.",
+  "pair_count": 360,
+  "per_alpha_wes_tests": [
+    {
+      "alpha": 1.0,
+      "holm_adjusted_p_value": 4.108101995117723e-16,
+      "mean_tripmates_wes_advantage": -14.111969000000004,
+      "median_tripmates_wes_advantage": -4.223413999999991,
+      "nonzero_pair_count": 90,
+      "pair_count": 90,
+      "rank_biserial_effect": -1.0,
+      "raw_p_value": 1.0270254987794307e-16,
+      "test_status": "computed",
+      "wilcoxon_statistic": 0.0
+    },
+    {
+      "alpha": 0.95,
+      "holm_adjusted_p_value": 1.0,
+      "mean_tripmates_wes_advantage": 0.0,
+      "median_tripmates_wes_advantage": 0.0,
+      "nonzero_pair_count": 0,
+      "pair_count": 90,
+      "rank_biserial_effect": 0.0,
+      "raw_p_value": 1.0,
+      "test_status": "all_paired_differences_zero",
+      "wilcoxon_statistic": 0.0
+    },
+    {
+      "alpha": 0.9,
+      "holm_adjusted_p_value": 1.0,
+      "mean_tripmates_wes_advantage": 0.0,
+      "median_tripmates_wes_advantage": 0.0,
+      "nonzero_pair_count": 0,
+      "pair_count": 90,
+      "rank_biserial_effect": 0.0,
+      "raw_p_value": 1.0,
+      "test_status": "all_paired_differences_zero",
+      "wilcoxon_statistic": 0.0
+    },
+    {
+      "alpha": 0.85,
+      "holm_adjusted_p_value": 1.6935951665640963e-14,
+      "mean_tripmates_wes_advantage": 35.18686700000001,
+      "median_tripmates_wes_advantage": 53.134450000000015,
+      "nonzero_pair_count": 80,
+      "pair_count": 90,
+      "rank_biserial_effect": 1.0,
+      "raw_p_value": 5.645317221880321e-15,
+      "test_status": "computed",
+      "wilcoxon_statistic": 0.0
+    }
+  ],
+  "pooled_wes_effect": 0.18472652218782248,
+  "pooled_wes_p_value": 0.036397729884544316,
+  "pooled_wes_status": "computed",
+  "positive_effect_interpretation": "favours TripMates Lite (lower WES)",
+  "replaces_original_result": false,
+  "search_policy_mode": "alpha_independent_frozen_policy",
+  "seed_count": 10,
+  "supersedes": "results/thermal_tradeoff_sensitivity/",
+  "test": "two-sided Wilcoxon signed-rank"
+}

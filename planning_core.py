@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Iterable, Mapping
 
@@ -186,13 +186,121 @@ class POI:
 
 
 @dataclass(frozen=True)
+class PlanningConstraints:
+    """The validated trip limits shared by every planner."""
+
+    start_poi_id: int = 1
+    start_time_min: float = TRIP_START_MIN
+    trip_end_min: float = TRIP_END_MIN
+    day_code: str = EXPERIMENT_DAY
+    cost_budget_rm: float = COST_BUDGET_RM
+
+    def __post_init__(self) -> None:
+        day = self.day_code.strip().upper()
+
+        if day not in VALID_DAYS:
+            raise ValueError(f"Invalid day code: {self.day_code}")
+
+        if self.start_time_min < 0:
+            raise ValueError("Trip start time cannot be negative.")
+
+        if self.trip_end_min <= self.start_time_min:
+            raise ValueError("Trip end time must be after the start time.")
+
+        if self.cost_budget_rm < 0:
+            raise ValueError("Cost budget cannot be negative.")
+
+        object.__setattr__(self, "day_code", day)
+
+
+@dataclass(frozen=True)
 class PlanningData:
     pois: dict[int, POI]
     walking_matrix: pd.DataFrame
+    _travel_lookup: dict[tuple[int, int], float] = field(
+        init=False,
+        repr=False,
+        compare=False,
+    )
+
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "_travel_lookup",
+            {
+                (from_id, to_id): float(
+                    self.walking_matrix.at[from_id, str(to_id)]
+                )
+                for from_id in self.pois
+                for to_id in self.pois
+            },
+        )
 
     @property
     def mandatory_ids(self) -> frozenset[int]:
         return frozenset(poi.poi_id for poi in self.pois.values() if poi.mandatory)
+
+    def with_mandatory_pois(
+        self,
+        mandatory_poi_ids: Iterable[int],
+    ) -> "PlanningData":
+        mandatory_ids = {int(poi_id) for poi_id in mandatory_poi_ids}
+        unknown_ids = mandatory_ids - set(self.pois)
+
+        if unknown_ids:
+            raise KeyError(
+                "Mandatory POI IDs are unknown: "
+                f"{sorted(unknown_ids)}"
+            )
+
+        return PlanningData(
+            pois={
+                poi_id: replace(
+                    poi,
+                    mandatory=(poi_id in mandatory_ids),
+                )
+                for poi_id, poi in self.pois.items()
+            },
+            walking_matrix=self.walking_matrix,
+        )
+
+    def with_preferred_pois(
+        self,
+        preferred_poi_ids: Iterable[int],
+        *,
+        utility_multiplier: float,
+    ) -> "PlanningData":
+        """Return request-scoped data with a soft utility preference.
+
+        The catalogue values remain unchanged.  Only the planning instance
+        receives the multiplier, so benchmark runs with no user preferences
+        retain their frozen objective values.
+        """
+
+        preferred_ids = {int(poi_id) for poi_id in preferred_poi_ids}
+        unknown_ids = preferred_ids - set(self.pois)
+        if unknown_ids:
+            raise KeyError(
+                "Preferred POI IDs are unknown: "
+                f"{sorted(unknown_ids)}"
+            )
+        if utility_multiplier < 1.0:
+            raise ValueError("Preferred utility multiplier must be at least 1.0.")
+
+        return PlanningData(
+            pois={
+                poi_id: replace(
+                    poi,
+                    utility_score=(
+                        poi.utility_score * utility_multiplier
+                        if poi_id in preferred_ids
+                        else poi.utility_score
+                    ),
+                )
+                for poi_id, poi in self.pois.items()
+            },
+            walking_matrix=self.walking_matrix,
+        )
 
     def get_travel_time(
         self,
@@ -200,12 +308,7 @@ class PlanningData:
         to_poi_id: int,
     ) -> float:
         try:
-            value = float(
-                self.walking_matrix.loc[
-                    from_poi_id,
-                    str(to_poi_id),
-                ]
-            )
+            value = self._travel_lookup[(from_poi_id, to_poi_id)]
         except KeyError as error:
             raise KeyError(
                 f"Walking-matrix value is missing for {from_poi_id} -> {to_poi_id}."

@@ -1,0 +1,99 @@
+{
+  "experiment": "C2 thermal trade-off sensitivity",
+  "classification": "exploratory sensitivity analysis",
+  "mode": "research_benchmark",
+  "timestamp_utc": "2026-10-09T15:48:45.185940+00:00",
+  "planners": [
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "alphas": [
+    1.0,
+    0.95,
+    0.9,
+    0.85
+  ],
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "instance_ids": [
+    "S1_early",
+    "S1_nominal",
+    "S1_late",
+    "S5_early",
+    "S5_nominal",
+    "S5_late",
+    "S6_early",
+    "S6_nominal",
+    "S6_late"
+  ],
+  "weather_instance_ids": [
+    "S1_early",
+    "S1_nominal",
+    "S1_late",
+    "S5_early",
+    "S5_nominal",
+    "S5_late",
+    "S6_early",
+    "S6_nominal",
+    "S6_late"
+  ],
+  "c2_policy": {
+    "utility_guardrail_definition": "route.utility >= alpha * U*",
+    "u_star_definition": "max(first-front maximum utility, seed-matched non-thermal reference utility)",
+    "visit_guardrail_definition": "route.completed_poi_count >= reference.completed_poi_count - margin",
+    "visit_guardrail_margin": 1,
+    "utility_guardrail_baseline": "front_maximum_plus_reference",
+    "priority": "c2"
+  },
+  "non_thermal_baseline_reused_across_alphas": true,
+  "non_thermal_baseline_note": "The non-thermal baseline is deterministic and alpha-independent, so it is computed once per (instance, seed) and replicated across the four alphas.",
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "dataset": {
+    "file": "poi_data_calculated_final.csv",
+    "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+    "bytes": 29201
+  },
+  "matrix": {
+    "file": "walking_time_matrix_final.csv",
+    "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+    "bytes": 24990
+  },
+  "initial_routes": {
+    "file": "initial_routes_by_seed.json",
+    "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+    "bytes": 873
+  },
+  "seed_interpretation": "The ten seeds are repeated stochastic optimisation runs for stability and paired comparison, not ten independent real-world disruptions.",
+  "raw_run_count": 360,
+  "pareto_front_row_count": 11783,
+  "total_runtime_seconds": 1863.886,
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  },
+  "original_result_preserved": "results/weather_ablation/ is untouched; the frozen 90-pair null result remains the confirmatory result."
+}

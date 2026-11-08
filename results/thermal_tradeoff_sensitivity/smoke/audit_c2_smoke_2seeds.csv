@@ -1,0 +1,9 @@
+seed,instance_id,alpha,route_changed,wes_reduction_percent,selection_status,fallback,front_size
+1001,S1_nominal,1.0,True,-0.988,thermal_admissible,False,21
+1001,S1_nominal,0.95,False,0.0,thermal_admissible,False,26
+1001,S1_nominal,0.9,False,0.0,thermal_admissible,False,26
+1001,S1_nominal,0.85,True,17.432,thermal_admissible,False,21
+1002,S1_nominal,1.0,True,-0.988,thermal_admissible,False,32
+1002,S1_nominal,0.95,False,0.0,thermal_admissible,False,32
+1002,S1_nominal,0.9,False,0.0,thermal_admissible,False,32
+1002,S1_nominal,0.85,True,17.432,thermal_admissible,False,32

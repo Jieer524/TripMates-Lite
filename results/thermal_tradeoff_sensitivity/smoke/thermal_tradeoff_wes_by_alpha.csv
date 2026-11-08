@@ -1,0 +1,5 @@
+instance_id,alpha,median_wes_difference,median_wes_reduction_percent,seeds_lower_wes,seeds_same_wes,seeds_higher_wes
+S1_nominal,1.000000,-3.801073,-0.988012,0,0,1
+S1_nominal,0.950000,0.000000,0.000000,0,1,0
+S1_nominal,0.900000,0.000000,0.000000,0,1,0
+S1_nominal,0.850000,67.064225,17.431997,1,0,0

@@ -1,0 +1,72 @@
+{
+  "experiment": "RQ1 full 18-instance benchmark",
+  "mode": "smoke_test",
+  "timestamp_utc": "2026-11-04T07:12:38.195501+00:00",
+  "planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "instance_ids": [
+    "S1_nominal"
+  ],
+  "official_instance_count": 18,
+  "seeds": [
+    1001
+  ],
+  "protocol": {
+    "static_distance": "Deterministic, seed-independent distance-first route; executes the remaining original sequence unchanged after disruption.",
+    "static_utility": "Seed-matched frozen Static Utility GA route; executes the remaining original sequence unchanged.",
+    "greedy_repair": "Deterministic given the seed-matched route; no WES, thermal or GA input.",
+    "adaptive_without_thermal": "Stochastic GA repair, matched seeds.",
+    "tripmates_lite": "Stochastic thermal-aware GA repair, matched seeds, frozen selection policy."
+  },
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "stability_metric_module": "stability_metrics.py",
+  "dataset": {
+    "file": "poi_data_calculated_final.csv",
+    "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+    "bytes": 29201
+  },
+  "matrix": {
+    "file": "walking_time_matrix_final.csv",
+    "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+    "bytes": 24990
+  },
+  "initial_routes": {
+    "file": "initial_routes_by_seed.json",
+    "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+    "bytes": 873
+  },
+  "seed_interpretation": "Seeds are repeated stochastic optimisation runs for stability and paired comparison, not independent real-world disruptions. Static Utility and Greedy Repair use the seed only to select the seed-matched initial route.",
+  "run_count": 5,
+  "failure_count": 0,
+  "total_runtime_seconds": 3.176,
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  }
+}

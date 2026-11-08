@@ -1,0 +1,60 @@
+{
+  "manifest_version": 2,
+  "generated_utc": "2026-10-10T08:05:58.779669+00:00",
+  "experiment": {
+    "name": "C2 thermal trade-off sensitivity (alpha-independent search)",
+    "directory": "results\\thermal_tradeoff_sensitivity_alpha_independent_v2",
+    "classification": "exploratory sensitivity analysis",
+    "is_confirmatory": false,
+    "runner": "run_thermal_tradeoff_sensitivity.py",
+    "analysis": "analyze_thermal_tradeoff_sensitivity.py"
+  },
+  "search_policy_mode": "alpha_independent_frozen_policy",
+  "final_selection_policy_mode": "alpha_sensitive_exploratory",
+  "supersedes": "results/thermal_tradeoff_sensitivity/",
+  "is_confirmatory": false,
+  "design": {
+    "alpha_scope": "alpha affects ONLY the final route selection; it does not affect GA search evolution, stagnation detection, convergence generation or the evaluated Pareto-front population.",
+    "search_policy": "one explicit frozen default policy, used for the generation-zero progress reference, the in-loop stagnation comparison and the convergence generation",
+    "final_selection_policy": "the requested C2 alpha with the C2 priority and guardrails",
+    "regression_test": "test_c2_alpha_independence.py"
+  },
+  "superseded_experiment": {
+    "directory": "results/thermal_tradeoff_sensitivity/",
+    "reason": "Its search was unintentionally alpha-dependent because the generation-zero selection used the requested alpha while the in-loop stagnation selection fell back to the frozen default.",
+    "preserved_unchanged": true
+  },
+  "original_confirmatory_result": {
+    "directory": "results/weather_ablation/",
+    "statement": "The frozen 90-pair thermal ablation remains the confirmatory fixed-policy result and is not replaced by this sensitivity analysis.",
+    "frozen_artifacts": [
+      {
+        "file": "weather_ablation_statistical_summary.json",
+        "sha256": "85b674d3bea82b5e3bfe0fb4b31631b9a91f67bc700f348d2b67f46b02eab9d2",
+        "bytes": 521
+      },
+      {
+        "file": "weather_ablation_raw_90_pairs.csv",
+        "sha256": "4dc09652ead3bc90530d276ee2d351e68ac059c1f99fe5d911ee5eb10faaafa9",
+        "bytes": 43847
+      },
+      {
+        "file": "weather_ablation_run_config.json",
+        "sha256": "396d8110fced702077b458118f5509960899dc8dce16f8d4f2c223b91bf6e8eb",
+        "bytes": 1098
+      }
+    ]
+  },
+  "frozen_inputs": {
+    "poi_dataset": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    }
+  }
+}

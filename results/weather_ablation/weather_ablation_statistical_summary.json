@@ -1,0 +1,14 @@
+{
+  "alpha": 0.05,
+  "analysis": "paired thermal-ablation statistical tests",
+  "conclusion": "No observed thermal advantage: every paired WES difference is zero.",
+  "effect_size": "matched-pairs rank-biserial correlation",
+  "instance_count": 9,
+  "overall_wes_effect": 0.0,
+  "overall_wes_p_value": 1.0,
+  "overall_wes_status": "all_paired_differences_zero",
+  "pair_count": 90,
+  "positive_effect_interpretation": "favours TripMates Lite",
+  "seed_count": 10,
+  "test": "two-sided Wilcoxon signed-rank"
+}

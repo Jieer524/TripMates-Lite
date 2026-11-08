@@ -31,10 +31,7 @@ import random
 from typing import Iterable
 
 from planning_core import (
-    COST_BUDGET_RM,
-    EXPERIMENT_DAY,
-    TRIP_END_MIN,
-    TRIP_START_MIN,
+    PlanningConstraints,
     PlanningData,
     ScheduleResult,
     decode_route,
@@ -99,7 +96,7 @@ class GARunResult:
 def build_mandatory_backbone(
     data: PlanningData,
     *,
-    start_poi_id: int = 1,
+    constraints: PlanningConstraints | None = None,
 ) -> tuple[int, ...]:
     """
     Enumerate all orderings of mandatory POIs except the fixed origin.
@@ -111,6 +108,8 @@ def build_mandatory_backbone(
     3. lexicographically smaller route as the final tie-breaker.
     """
 
+    active_constraints = constraints or PlanningConstraints()
+    start_poi_id = active_constraints.start_poi_id
     mandatory_ids = set(data.mandatory_ids)
 
     if start_poi_id not in mandatory_ids:
@@ -143,11 +142,11 @@ def build_mandatory_backbone(
             visit_sequence=route,
 
             start_poi_id=start_poi_id,
-            start_time_min=TRIP_START_MIN,
-            trip_end_min=TRIP_END_MIN,
+            start_time_min=active_constraints.start_time_min,
+            trip_end_min=active_constraints.trip_end_min,
 
-            day_code=EXPERIMENT_DAY,
-            cost_budget_rm=COST_BUDGET_RM,
+            day_code=active_constraints.day_code,
+            cost_budget_rm=active_constraints.cost_budget_rm,
 
             start_poi_is_visit=True,
 
@@ -191,6 +190,54 @@ def calculate_route_utility(
     )
 
 
+def evaluate_initial_route_summary(
+    data: PlanningData,
+    route: tuple[int, ...],
+    constraints: PlanningConstraints,
+) -> tuple[float, float] | None:
+    """Return travel and finish time without constructing a schedule."""
+
+    current_poi_id = constraints.start_poi_id
+    current_time = float(constraints.start_time_min)
+    current_cost = 0.0
+    total_travel = 0.0
+
+    for sequence_index, poi_id in enumerate(route):
+        poi = data.pois[poi_id]
+        opening_window = poi.get_opening_window(constraints.day_code)
+        if opening_window is None:
+            return None
+
+        if sequence_index == 0:
+            if poi_id != constraints.start_poi_id:
+                return None
+            travel_min = 0.0
+        else:
+            travel_min = data.get_travel_time(current_poi_id, poi_id)
+
+        arrival_min = current_time + travel_min
+        opening_min, closing_min = opening_window
+        visit_start_min = max(arrival_min, float(opening_min))
+        visit_end_min = visit_start_min + poi.visit_duration_min
+        proposed_cost = current_cost + poi.admission_cost_rm
+
+        if visit_start_min >= closing_min:
+            return None
+        if visit_end_min > closing_min + 1e-9:
+            return None
+        if visit_end_min > constraints.trip_end_min + 1e-9:
+            return None
+        if proposed_cost > constraints.cost_budget_rm + 1e-9:
+            return None
+
+        total_travel += travel_min
+        current_time = visit_end_min
+        current_cost = proposed_cost
+        current_poi_id = poi_id
+
+    return total_travel, current_time
+
+
 # ================================================================
 # Chromosome decoder
 # ================================================================
@@ -199,6 +246,7 @@ def decode_chromosome(
     data: PlanningData,
     chromosome: tuple[int, ...],
     mandatory_backbone: tuple[int, ...],
+    constraints: PlanningConstraints | None = None,
 ) -> EvaluatedSolution:
     """
     Decode an optional-POI permutation.
@@ -216,6 +264,8 @@ def decode_chromosome(
     A gene is skipped when no feasible insertion exists.
     """
 
+    active_constraints = constraints or PlanningConstraints()
+
     current_route = list(
         mandatory_backbone
     )
@@ -224,12 +274,12 @@ def decode_chromosome(
         data=data,
         visit_sequence=current_route,
 
-        start_poi_id=1,
-        start_time_min=TRIP_START_MIN,
-        trip_end_min=TRIP_END_MIN,
+        start_poi_id=active_constraints.start_poi_id,
+        start_time_min=active_constraints.start_time_min,
+        trip_end_min=active_constraints.trip_end_min,
 
-        day_code=EXPERIMENT_DAY,
-        cost_budget_rm=COST_BUDGET_RM,
+        day_code=active_constraints.day_code,
+        cost_budget_rm=active_constraints.cost_budget_rm,
 
         start_poi_is_visit=True,
 
@@ -252,7 +302,6 @@ def decode_chromosome(
                 float,
                 float,
                 tuple[int, ...],
-                ScheduleResult,
             ]
         ] = []
 
@@ -261,44 +310,31 @@ def decode_chromosome(
             1,
             len(current_route) + 1,
         ):
-            test_route = (
+            test_route = tuple(
                 current_route[:insertion_position]
                 + [candidate_poi_id]
                 + current_route[insertion_position:]
             )
-
-            test_result = decode_route(
-                data=data,
-                visit_sequence=test_route,
-
-                start_poi_id=1,
-                start_time_min=TRIP_START_MIN,
-                trip_end_min=TRIP_END_MIN,
-
-                day_code=EXPERIMENT_DAY,
-                cost_budget_rm=COST_BUDGET_RM,
-
-                start_poi_is_visit=True,
-
-                required_mandatory_ids=(
-                    data.mandatory_ids
-                ),
+            summary = evaluate_initial_route_summary(
+                data,
+                test_route,
+                active_constraints,
             )
-
-            if not test_result.feasible:
+            if summary is None:
                 continue
 
+            total_travel_min, finish_min = summary
+
             travel_increase = (
-                test_result.total_travel_min
+                total_travel_min
                 - current_result.total_travel_min
             )
 
             feasible_insertions.append(
                 (
                     travel_increase,
-                    test_result.finish_min,
-                    tuple(test_route),
-                    test_result,
+                    finish_min,
+                    test_route,
                 )
             )
 
@@ -321,8 +357,16 @@ def decode_chromosome(
             selected_insertion[2]
         )
 
-        current_result = (
-            selected_insertion[3]
+        current_result = decode_route(
+            data=data,
+            visit_sequence=current_route,
+            start_poi_id=active_constraints.start_poi_id,
+            start_time_min=active_constraints.start_time_min,
+            trip_end_min=active_constraints.trip_end_min,
+            day_code=active_constraints.day_code,
+            cost_budget_rm=active_constraints.cost_budget_rm,
+            start_poi_is_visit=True,
+            required_mandatory_ids=data.mandatory_ids,
         )
 
     achieved_utility = (
@@ -728,6 +772,7 @@ def select_final_solution(
 def build_utility_efficiency_chromosome(
     data: PlanningData,
     optional_ids: list[int],
+    start_poi_id: int,
 ) -> tuple[int, ...]:
     """
     Rank optional POIs by:
@@ -750,7 +795,7 @@ def build_utility_efficiency_chromosome(
                             poi_id
                         ].visit_duration_min
                         + data.get_travel_time(
-                            1,
+                            start_poi_id,
                             poi_id,
                         )
                     )
@@ -764,13 +809,14 @@ def build_utility_efficiency_chromosome(
 def build_nearest_neighbour_chromosome(
     data: PlanningData,
     optional_ids: list[int],
+    start_poi_id: int,
 ) -> tuple[int, ...]:
     remaining_ids = set(
         optional_ids
     )
 
     ordered_ids: list[int] = []
-    current_poi_id = 1
+    current_poi_id = start_poi_id
 
     while remaining_ids:
         selected_poi_id = min(
@@ -806,6 +852,7 @@ def initialise_population(
     data: PlanningData,
     config: GAConfig,
     random_generator: random.Random,
+    start_poi_id: int = 1,
 ) -> list[tuple[int, ...]]:
     optional_ids = sorted(
         set(data.pois)
@@ -816,6 +863,7 @@ def initialise_population(
         build_utility_efficiency_chromosome(
             data,
             optional_ids,
+            start_poi_id,
         )
     )
 
@@ -823,6 +871,7 @@ def initialise_population(
         build_nearest_neighbour_chromosome(
             data,
             optional_ids,
+            start_poi_id,
         )
     )
 
@@ -851,9 +900,25 @@ def initialise_population(
         nearest_seed
     )
 
-    while len(chromosomes) < (
-        config.population_size
-    ):
+    # A population can never hold more distinct chromosomes than the
+    # optional POIs admit.  Without this cap a catalogue with few
+    # optional POIs (for example the small synthetic fixture used by
+    # the test suite) makes the fill loop spin forever, because every
+    # permutation is already in ``seen``.  The 50-POI research
+    # catalogue has 47 optional POIs, so the cap is never reached there
+    # and the frozen benchmark behaviour is unchanged.
+    distinct_limit = (
+        math.factorial(len(optional_ids))
+        if optional_ids
+        else 1
+    )
+
+    target_size = min(
+        config.population_size,
+        distinct_limit,
+    )
+
+    while len(chromosomes) < target_size:
         random_chromosome = tuple(
             random_generator.sample(
                 optional_ids,
@@ -1016,9 +1081,12 @@ def run_static_utility_ga(
     *,
     seed: int,
     config: GAConfig | None = None,
+    constraints: PlanningConstraints | None = None,
 ) -> GARunResult:
     if config is None:
         config = GAConfig()
+
+    active_constraints = constraints or PlanningConstraints()
 
     random_generator = (
         random.Random(seed)
@@ -1027,7 +1095,7 @@ def run_static_utility_ga(
     mandatory_backbone = (
         build_mandatory_backbone(
             data=data,
-            start_poi_id=1,
+            constraints=active_constraints,
         )
     )
 
@@ -1060,6 +1128,7 @@ def run_static_utility_ga(
                 mandatory_backbone=(
                     mandatory_backbone
                 ),
+                constraints=active_constraints,
             )
 
         solution = (
@@ -1088,6 +1157,7 @@ def run_static_utility_ga(
             random_generator=(
                 random_generator
             ),
+            start_poi_id=active_constraints.start_poi_id,
         )
     )
 

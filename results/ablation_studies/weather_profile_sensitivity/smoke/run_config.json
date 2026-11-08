@@ -1,0 +1,148 @@
+{
+  "study": "weather_profile_sensitivity",
+  "experiment": "weather_profile_sensitivity (TripMates Lite)",
+  "mode": "smoke_test",
+  "result_class": "exploratory_sensitivity",
+  "confirmatory": false,
+  "confirmatory_note": "This study is an exploratory sensitivity analysis. Confirmatory evidence is the frozen RQ1 benchmark (results/rq1_full_benchmark) and the frozen weather ablation (results/weather_ablation). No claim of superiority may be based on this directory alone.",
+  "timestamp_utc": "2026-11-04T07:18:40.921460+00:00",
+  "seeds": [
+    1001
+  ],
+  "planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "factor_specification": {
+    "levels": [
+      {
+        "level": "normal",
+        "label": "normal conditions",
+        "category": "normal",
+        "thermal_multiplier": 1.0,
+        "simulate_missing_segment": false,
+        "rationale": "Thermal objective inactive; TripMates Lite must reproduce Adaptive Without Thermal exactly.",
+        "weather_level": "normal",
+        "weather_source_type": "predefined",
+        "weather_category": "normal",
+        "weather_thermal_multiplier": 1.0,
+        "weather_fallback_reason": "",
+        "weather_treated_as_zero_exposure": false
+      },
+      {
+        "level": "hot",
+        "label": "hot conditions",
+        "category": "hot",
+        "thermal_multiplier": 1.8,
+        "simulate_missing_segment": false,
+        "rationale": "The frozen S1 heavy-rain thermal multiplier.",
+        "weather_level": "hot",
+        "weather_source_type": "predefined",
+        "weather_category": "hot",
+        "weather_thermal_multiplier": 1.8,
+        "weather_fallback_reason": "",
+        "weather_treated_as_zero_exposure": false
+      },
+      {
+        "level": "very_hot",
+        "label": "very hot conditions",
+        "category": "very_hot",
+        "thermal_multiplier": 2.4,
+        "simulate_missing_segment": false,
+        "rationale": "Above the frozen S5 heatwave value of 2.00; an extreme-heat stress test.",
+        "weather_level": "very_hot",
+        "weather_source_type": "predefined",
+        "weather_category": "very_hot",
+        "weather_thermal_multiplier": 2.4,
+        "weather_fallback_reason": "",
+        "weather_treated_as_zero_exposure": false
+      },
+      {
+        "level": "afternoon_escalation",
+        "label": "afternoon thermal escalation",
+        "category": "hot",
+        "thermal_multiplier": 2.0,
+        "simulate_missing_segment": false,
+        "rationale": "Fixed benchmark profile applied to post-12:00 activity; it is not a live diurnal forecast.",
+        "weather_level": "afternoon_escalation",
+        "weather_source_type": "predefined",
+        "weather_category": "hot",
+        "weather_thermal_multiplier": 2.0,
+        "weather_fallback_reason": "",
+        "weather_treated_as_zero_exposure": false
+      },
+      {
+        "level": "missing_segment",
+        "label": "missing weather segment",
+        "category": "hot",
+        "thermal_multiplier": 1.8,
+        "simulate_missing_segment": true,
+        "rationale": "The live lookup fails and no cache exists, so the documented predefined fallback applies. The resolved multiplier equals the hot profile (1.8) and is recorded per run; missing weather is never treated as zero exposure.",
+        "weather_level": "missing_segment",
+        "weather_source_type": "predefined",
+        "weather_category": "hot",
+        "weather_thermal_multiplier": 1.8,
+        "weather_fallback_reason": "live weather unavailable: missing weather segment for this part of the itinerary",
+        "weather_treated_as_zero_exposure": false
+      }
+    ],
+    "identical_inputs": true,
+    "study_started_utc": "2026-11-04T07:18:40.921460+00:00"
+  },
+  "run_count": 25,
+  "failure_count": 0,
+  "total_runtime_seconds": 13.617,
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "stability_metric_module": "stability_metrics.py",
+  "metric_schema": "benchmark_common.build_metric_record",
+  "inputs": {
+    "poi_catalogue": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    },
+    "initial_routes": {
+      "file": "initial_routes_by_seed.json",
+      "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+      "bytes": 873
+    }
+  },
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  },
+  "source_script": "run_gap_experiments.py",
+  "instances": [
+    "S1_nominal"
+  ],
+  "output_root": "results\\ablation_studies"
+}

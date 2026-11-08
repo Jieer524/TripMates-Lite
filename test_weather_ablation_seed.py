@@ -243,16 +243,9 @@ def main() -> None:
             initial_schedule=initial_schedule,
             state=state,
             scenario_instance=scenario_instance,
-            thermal_aware_candidate_window=False,
         )
 
-        tripmates_problem = prepare_adaptive_problem(
-            data=data,
-            initial_schedule=initial_schedule,
-            state=state,
-            scenario_instance=scenario_instance,
-            thermal_aware_candidate_window=True,
-        )
+        tripmates_problem = adaptive_problem
 
         # --------------------------------------------------------
         # Candidate-window validation
@@ -519,10 +512,13 @@ def main() -> None:
             != tripmates_candidate_ids
         )
 
-        print(
-            "Candidate windows differ:",
-            candidate_windows_differ,
-        )
+        print("Candidate windows match:", not candidate_windows_differ)
+
+        if candidate_windows_differ:
+            raise RuntimeError(
+                f"{instance_id}: the planners must receive "
+                "the same candidate window."
+            )
 
         print(
             "Adaptive route:",
@@ -732,6 +728,12 @@ def main() -> None:
                 ),
                 "visit_guardrail_passed": (
                     visit_guardrail_passed
+                ),
+                "tripmates_selection_status": (
+                    tripmates_result.selection_status
+                ),
+                "tripmates_guardrail_fallback_used": (
+                    tripmates_result.guardrail_fallback_used
                 ),
                 "adaptive_generations": (
                     no_thermal_result

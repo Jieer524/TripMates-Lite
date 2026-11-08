@@ -1,0 +1,69 @@
+{
+  "manifest_version": 1,
+  "generated_utc": "2026-10-10T08:05:58.740068+00:00",
+  "new_experiment": {
+    "name": "C2 thermal trade-off sensitivity",
+    "directory": "results\\thermal_tradeoff_sensitivity",
+    "classification": "exploratory sensitivity analysis",
+    "is_confirmatory": false,
+    "purpose": "Quantify the utility-exposure trade-off under predefined utility-retention policies.",
+    "runner": "run_thermal_tradeoff_sensitivity.py",
+    "analysis": "analyze_thermal_tradeoff_sensitivity.py"
+  },
+  "original_confirmatory_experiment": {
+    "name": "Thermal-awareness ablation",
+    "directory": "results\\weather_ablation",
+    "classification": "confirmatory fixed-policy result",
+    "planners": [
+      "Adaptive Without Thermal",
+      "TripMates Lite"
+    ],
+    "paired_result_count": 90,
+    "instance_count": 9,
+    "seed_count": 10,
+    "observed_outcome": {
+      "route_change": "no selected-route change in any pair",
+      "wes_difference": "no weather-weighted exposure difference in any pair",
+      "overall_wes_p_value": 1.0,
+      "overall_wes_effect_size": 0.0,
+      "test_status": "all_paired_differences_zero",
+      "conclusion": "No observed thermal advantage: every paired WES difference is zero."
+    },
+    "frozen_artifacts": [
+      {
+        "file": "weather_ablation_statistical_summary.json",
+        "sha256": "85b674d3bea82b5e3bfe0fb4b31631b9a91f67bc700f348d2b67f46b02eab9d2",
+        "bytes": 521
+      },
+      {
+        "file": "weather_ablation_raw_90_pairs.csv",
+        "sha256": "4dc09652ead3bc90530d276ee2d351e68ac059c1f99fe5d911ee5eb10faaafa9",
+        "bytes": 43847
+      },
+      {
+        "file": "weather_ablation_run_config.json",
+        "sha256": "396d8110fced702077b458118f5509960899dc8dce16f8d4f2c223b91bf6e8eb",
+        "bytes": 1098
+      }
+    ]
+  },
+  "relationship": {
+    "c2_is_additional": true,
+    "c2_must_not_replace_original": true,
+    "statement": "The original 90-pair thermal ablation is a confirmatory fixed-policy result. Its observed outcome was no selected-route change and no WES difference. The C2 sensitivity analysis is additional and exploratory and must not replace the original result.",
+    "original_files_modified": false,
+    "note": "No original raw CSV or summary file is edited, overwritten or relabelled by this work."
+  },
+  "frozen_inputs": {
+    "poi_dataset": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    }
+  }
+}

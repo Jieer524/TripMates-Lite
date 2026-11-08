@@ -117,44 +117,14 @@ def prepare_case(
             initial_schedule=initial_schedule,
             state=state,
             scenario_instance=scenario_instance,
-            thermal_aware_candidate_window=False,
         )
     )
-
-    tripmates_problem = (
-        prepare_adaptive_problem(
-            data=data,
-            initial_schedule=initial_schedule,
-            state=state,
-            scenario_instance=scenario_instance,
-            thermal_aware_candidate_window=True,
-        )
-    )
-
-    # Confirm that the correct mode was assigned.
-    if (
-        adaptive_problem
-        .thermal_aware_candidate_window
-    ):
-        raise RuntimeError(
-            "Adaptive Without Thermal incorrectly "
-            "uses a thermal candidate window."
-        )
-
-    if not (
-        tripmates_problem
-        .thermal_aware_candidate_window
-    ):
-        raise RuntimeError(
-            "TripMates Lite did not receive "
-            "a thermal-aware candidate window."
-        )
 
     return (
         initial_schedule,
         state,
         adaptive_problem,
-        tripmates_problem,
+        adaptive_problem,
     )
 
 def print_metrics(
@@ -429,10 +399,13 @@ def main() -> None:
         .all_candidate_ids
     )
 
-    print(
-        "Candidate windows differ:",
-        candidate_windows_differ,
-    )
+    print("Candidate windows match:", not candidate_windows_differ)
+
+    if candidate_windows_differ:
+        raise RuntimeError(
+            "The thermal and non-thermal planners must use "
+            "the same bounded candidate window."
+        )
 
     print_metrics(
         name="Adaptive Without Thermal",
@@ -515,6 +488,23 @@ def main() -> None:
         "Visit guardrail passed:",
         visit_loss <= 1,
     )
+
+    if tripmates.guardrail_fallback_used:
+        if thermal_solution.route != no_thermal_solution.route:
+            raise RuntimeError(
+                "A guardrail fallback must return the "
+                "non-thermal reference route."
+            )
+    elif not (
+        thermal_solution.achieved_utility
+        >= 0.90 * no_thermal_solution.achieved_utility
+        and thermal_solution.completed_poi_count
+        >= no_thermal_solution.completed_poi_count - 1
+    ):
+        raise RuntimeError(
+            "The selected thermal route violated the "
+            "non-thermal reference guardrails."
+        )
 
 
 if __name__ == "__main__":

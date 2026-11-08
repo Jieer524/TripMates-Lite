@@ -1,0 +1,16 @@
+{
+  "classification": "exploratory_sensitivity",
+  "descriptive_only": true,
+  "metric_columns": [
+    "feasible",
+    "achieved_utility",
+    "retained_poi_count",
+    "original_poi_retention",
+    "wes",
+    "total_travel_min",
+    "changed_activity_count",
+    "edit_distance_score",
+    "runtime_seconds"
+  ],
+  "paired_tests": 0
+}

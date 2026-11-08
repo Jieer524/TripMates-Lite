@@ -1,0 +1,72 @@
+{
+  "experiment": "RQ3 latency benchmark",
+  "mode": "smoke_test",
+  "timestamp_utc": "2026-10-10T07:49:40.770118+00:00",
+  "planners": [
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "instance_ids": [
+    "S1_nominal"
+  ],
+  "official_instance_count": 18,
+  "fixed_seed": 1001,
+  "repetitions": 3,
+  "warmup_count": 1,
+  "timer": "time.perf_counter",
+  "measured_scopes": {
+    "engine_only": "Planner entry-point call, planning data loaded, shared disruption state pre-built.",
+    "end_to_end_request": "Shared disruption-state construction plus the planner call; planning data already loaded.",
+    "shared_preparation": "simulate_replanning_state + prepare_adaptive_problem only."
+  },
+  "dataset_loading_policy": "Dataset loading is excluded from both timed scopes and reported separately as dataset_load_seconds.",
+  "dataset_load_seconds": 0.070686,
+  "settings": {
+    "research_benchmark": {
+      "population_size": 40,
+      "maximum_generations": 60,
+      "tournament_size": 3,
+      "crossover_probability": 0.9,
+      "mutation_probability": 0.2,
+      "elitism_count": 2,
+      "stagnation_limit": 15
+    },
+    "quick_preview": {
+      "population_size": 12,
+      "maximum_generations": 8,
+      "tournament_size": 3,
+      "crossover_probability": 0.9,
+      "mutation_probability": 0.2,
+      "elitism_count": 2,
+      "stagnation_limit": 3
+    },
+    "quick_preview_note": "Reduced interactive configuration; never presented as a research benchmark.",
+    "greedy_deterministic_no_ga": "Greedy Repair has no GA parameters."
+  },
+  "greedy_preparation_note": "Greedy Repair builds its own shared candidate window inside its entry-point call, so its engine_only time includes that preparation; the GA planners receive a pre-built problem. The shared_preparation scope makes this explicit.",
+  "dataset": {
+    "file": "poi_data_calculated_final.csv",
+    "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+    "bytes": 29201
+  },
+  "matrix": {
+    "file": "walking_time_matrix_final.csv",
+    "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+    "bytes": 24990
+  },
+  "initial_routes": {
+    "file": "initial_routes_by_seed.json",
+    "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+    "bytes": 873
+  },
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  }
+}

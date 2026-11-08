@@ -1,0 +1,12 @@
+{
+  "applicable_at": "interactive",
+  "category": "rain",
+  "fallback_reason": null,
+  "latitude": 3.139,
+  "longitude": 101.6869,
+  "retrieved_at": "2026-09-23T14:15:10.482406+00:00",
+  "source_type": "live",
+  "temperature_c": 25.9,
+  "thermal_multiplier": 1.8,
+  "weather_code": 95
+}

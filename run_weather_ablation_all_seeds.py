@@ -56,6 +56,12 @@ from scenario_core import (
     simulate_replanning_state,
 )
 
+from stability_metrics import (
+    StabilityMetrics,
+    StabilityWeightConfig,
+    compute_stability_from_state,
+)
+
 from tripmates_lite_ga import (
     run_tripmates_lite_ga,
 )
@@ -162,6 +168,23 @@ def encode_ids(
             for value in values
         ]
     )
+
+
+def prefixed_stability_columns(
+    prefix: str,
+    metrics: StabilityMetrics,
+) -> dict:
+    """Flatten one planner's stability metrics into prefixed columns.
+
+    The paired ablation compares two planners on the same trigger state,
+    so each planner gets its own ``adaptive_*`` / ``tripmates_*`` block
+    of the same eleven compact stability columns.
+    """
+
+    return {
+        f"{prefix}_{key}": value
+        for key, value in metrics.to_summary_dict().items()
+    }
 
 
 def validate_selected_solution(
@@ -349,6 +372,54 @@ def build_instance_summary(
                         ].mean()
                         * 100.0
                     )
+                ),
+
+                # ----------------------------------------------
+                # Itinerary stability
+                # ----------------------------------------------
+
+                "median_adaptive_edit_distance": (
+                    float(
+                        group[
+                            "adaptive_edit_distance_score"
+                        ].median()
+                    )
+                ),
+
+                "median_tripmates_edit_distance": (
+                    float(
+                        group[
+                            "tripmates_edit_distance_score"
+                        ].median()
+                    )
+                ),
+
+                "median_adaptive_preserved_poi_count": (
+                    float(
+                        group[
+                            "adaptive_preserved_poi_count"
+                        ].median()
+                    )
+                ),
+
+                "median_tripmates_preserved_poi_count": (
+                    float(
+                        group[
+                            "tripmates_preserved_poi_count"
+                        ].median()
+                    )
+                ),
+
+                "adaptive_locked_prefix_violation_count": int(
+                    group[
+                        "adaptive_hard_stability_violation"
+                    ].sum()
+                ),
+
+                "tripmates_locked_prefix_violation_count": int(
+                    group[
+                        "tripmates_hard_stability_violation"
+                    ].sum()
                 ),
 
                 # ----------------------------------------------
@@ -850,6 +921,50 @@ def main() -> None:
             )
 
             # ====================================================
+            # Itinerary stability (shared definition)
+            #
+            # Both planners are measured from the same trigger state
+            # against the same original suffix, so their edit
+            # distances are directly comparable.
+            # ====================================================
+
+            adaptive_stability = (
+                compute_stability_from_state(
+                    state=state,
+                    replanned_suffix=(
+                        adaptive_solution.route
+                    ),
+                    original_schedule=(
+                        initial_schedule
+                    ),
+                    replanned_schedule=(
+                        adaptive_solution.schedule
+                    ),
+                    repair_record=(
+                        adaptive_result.repair_record
+                    ),
+                )
+            )
+
+            tripmates_stability = (
+                compute_stability_from_state(
+                    state=state,
+                    replanned_suffix=(
+                        tripmates_solution.route
+                    ),
+                    original_schedule=(
+                        initial_schedule
+                    ),
+                    replanned_schedule=(
+                        tripmates_solution.schedule
+                    ),
+                    repair_record=(
+                        tripmates_result.repair_record
+                    ),
+                )
+            )
+
+            # ====================================================
             # Paired comparison
             # ====================================================
 
@@ -1028,6 +1143,20 @@ def main() -> None:
 
                     "route_changed": (
                         route_changed
+                    ),
+
+                    # ------------------------------------------
+                    # Itinerary stability
+                    # ------------------------------------------
+
+                    **prefixed_stability_columns(
+                        "adaptive",
+                        adaptive_stability,
+                    ),
+
+                    **prefixed_stability_columns(
+                        "tripmates",
+                        tripmates_stability,
                     ),
 
                     # ------------------------------------------
@@ -1311,6 +1440,14 @@ def main() -> None:
 
         "ga_configuration": asdict(
             REPLANNING_GA_CONFIG
+        ),
+
+        "stability_weights": (
+            StabilityWeightConfig().to_dict()
+        ),
+
+        "stability_metric_module": (
+            "stability_metrics.py"
         ),
 
         "poi_file": (

@@ -1,0 +1,241 @@
+density_level,planner,metric,comparison,pairs,statistic,p_value,effect_rank_biserial,status,q_value
+dense,Adaptive Without Thermal,achieved_utility,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,achieved_utility,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Adaptive Without Thermal,retained_poi_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,retained_poi_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Adaptive Without Thermal,original_poi_retention,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,original_poi_retention,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,wes,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,wes,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Adaptive Without Thermal,total_travel_min,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,total_travel_min,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Adaptive Without Thermal,changed_activity_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,changed_activity_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Adaptive Without Thermal,edit_distance_score,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Adaptive Without Thermal,edit_distance_score,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Adaptive Without Thermal,runtime_seconds,"('dense',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Adaptive Without Thermal,runtime_seconds,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,achieved_utility,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,achieved_utility,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Greedy Repair,retained_poi_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,retained_poi_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,original_poi_retention,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,original_poi_retention,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Greedy Repair,wes,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,wes,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,total_travel_min,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,total_travel_min,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,changed_activity_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,changed_activity_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,edit_distance_score,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Greedy Repair,edit_distance_score,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Greedy Repair,runtime_seconds,"('dense',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+dense,Greedy Repair,runtime_seconds,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Static Distance,achieved_utility,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,achieved_utility,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,retained_poi_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,retained_poi_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,original_poi_retention,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,original_poi_retention,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,wes,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,wes,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,total_travel_min,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,total_travel_min,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,changed_activity_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,changed_activity_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,edit_distance_score,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,edit_distance_score,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Distance,runtime_seconds,"('dense',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+dense,Static Distance,runtime_seconds,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,Static Utility,achieved_utility,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,achieved_utility,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Static Utility,retained_poi_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,retained_poi_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Static Utility,original_poi_retention,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,original_poi_retention,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,wes,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,wes,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Static Utility,total_travel_min,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,total_travel_min,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,Static Utility,changed_activity_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,changed_activity_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,edit_distance_score,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,edit_distance_score,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,Static Utility,runtime_seconds,"('dense',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+dense,Static Utility,runtime_seconds,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,TripMates Lite,achieved_utility,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,achieved_utility,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,TripMates Lite,retained_poi_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,retained_poi_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,TripMates Lite,original_poi_retention,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,original_poi_retention,"('dense',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,wes,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,wes,"('dense',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+dense,TripMates Lite,total_travel_min,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,total_travel_min,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,TripMates Lite,changed_activity_count,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,changed_activity_count,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,TripMates Lite,edit_distance_score,"('dense',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+dense,TripMates Lite,edit_distance_score,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+dense,TripMates Lite,runtime_seconds,"('dense',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+dense,TripMates Lite,runtime_seconds,"('dense',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,achieved_utility,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,achieved_utility,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Adaptive Without Thermal,retained_poi_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,retained_poi_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Adaptive Without Thermal,original_poi_retention,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,original_poi_retention,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,wes,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,wes,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,total_travel_min,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,total_travel_min,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,changed_activity_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,changed_activity_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,edit_distance_score,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Adaptive Without Thermal,edit_distance_score,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,runtime_seconds,"('moderate',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Adaptive Without Thermal,runtime_seconds,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Greedy Repair,achieved_utility,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,achieved_utility,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Greedy Repair,retained_poi_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,retained_poi_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,original_poi_retention,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,original_poi_retention,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Greedy Repair,wes,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,wes,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,total_travel_min,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,total_travel_min,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,changed_activity_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,changed_activity_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,edit_distance_score,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Greedy Repair,edit_distance_score,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,runtime_seconds,"('moderate',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Greedy Repair,runtime_seconds,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Distance,achieved_utility,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,achieved_utility,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,retained_poi_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,retained_poi_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,original_poi_retention,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,original_poi_retention,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,wes,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,wes,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,total_travel_min,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,total_travel_min,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,changed_activity_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,changed_activity_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,edit_distance_score,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,edit_distance_score,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Distance,runtime_seconds,"('moderate',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Distance,runtime_seconds,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,Static Utility,achieved_utility,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,achieved_utility,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Utility,retained_poi_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,retained_poi_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Utility,original_poi_retention,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,original_poi_retention,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,wes,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,wes,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Utility,total_travel_min,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,total_travel_min,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Utility,changed_activity_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,changed_activity_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,edit_distance_score,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,edit_distance_score,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,Static Utility,runtime_seconds,"('moderate',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,Static Utility,runtime_seconds,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,TripMates Lite,achieved_utility,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,achieved_utility,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,TripMates Lite,retained_poi_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,retained_poi_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,TripMates Lite,original_poi_retention,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,original_poi_retention,"('moderate',) vs ('relaxed',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,wes,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,wes,"('moderate',) vs ('relaxed',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,TripMates Lite,total_travel_min,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,total_travel_min,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,TripMates Lite,changed_activity_count,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,changed_activity_count,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,TripMates Lite,edit_distance_score,"('moderate',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+moderate,TripMates Lite,edit_distance_score,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+moderate,TripMates Lite,runtime_seconds,"('moderate',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+moderate,TripMates Lite,runtime_seconds,"('moderate',) vs ('relaxed',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,achieved_utility,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,achieved_utility,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,retained_poi_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,retained_poi_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,original_poi_retention,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Adaptive Without Thermal,original_poi_retention,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Adaptive Without Thermal,wes,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,wes,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,total_travel_min,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,total_travel_min,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,changed_activity_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,changed_activity_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,edit_distance_score,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,edit_distance_score,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Adaptive Without Thermal,runtime_seconds,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Adaptive Without Thermal,runtime_seconds,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Greedy Repair,achieved_utility,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Greedy Repair,achieved_utility,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Greedy Repair,retained_poi_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,retained_poi_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,original_poi_retention,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Greedy Repair,original_poi_retention,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Greedy Repair,wes,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,wes,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,total_travel_min,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,total_travel_min,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,changed_activity_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,changed_activity_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,edit_distance_score,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,edit_distance_score,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,runtime_seconds,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Greedy Repair,runtime_seconds,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Distance,achieved_utility,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,achieved_utility,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,retained_poi_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,retained_poi_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,original_poi_retention,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,original_poi_retention,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,wes,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,wes,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,total_travel_min,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,total_travel_min,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,changed_activity_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,changed_activity_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,edit_distance_score,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,edit_distance_score,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Distance,runtime_seconds,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Static Distance,runtime_seconds,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,Static Utility,achieved_utility,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,achieved_utility,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,retained_poi_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,retained_poi_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,original_poi_retention,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,original_poi_retention,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,wes,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,wes,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,total_travel_min,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,total_travel_min,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,changed_activity_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,changed_activity_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,edit_distance_score,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,edit_distance_score,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,Static Utility,runtime_seconds,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,Static Utility,runtime_seconds,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,achieved_utility,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,achieved_utility,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,retained_poi_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,retained_poi_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,original_poi_retention,"('relaxed',) vs ('dense',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,TripMates Lite,original_poi_retention,"('relaxed',) vs ('moderate',)",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+relaxed,TripMates Lite,wes,"('relaxed',) vs ('dense',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,wes,"('relaxed',) vs ('moderate',)",1,0.0,1.0,1.0,computed,1.0
+relaxed,TripMates Lite,total_travel_min,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,total_travel_min,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,changed_activity_count,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,changed_activity_count,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,edit_distance_score,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,edit_distance_score,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,runtime_seconds,"('relaxed',) vs ('dense',)",1,0.0,1.0,-1.0,computed,1.0
+relaxed,TripMates Lite,runtime_seconds,"('relaxed',) vs ('moderate',)",1,0.0,1.0,-1.0,computed,1.0

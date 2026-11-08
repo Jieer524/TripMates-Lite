@@ -1,0 +1,88 @@
+{
+  "alpha": 0.05,
+  "analysis": "RQ1 full benchmark paired analysis",
+  "effect_size": "matched-pairs rank-biserial correlation",
+  "instance_count": 18,
+  "overall_wes_tests": [
+    {
+      "first_planner": "TripMates Lite",
+      "mean_advantage": 0.0,
+      "median_advantage": 0.0,
+      "nonzero_pair_count": 0,
+      "pair_count": 180,
+      "rank_biserial_effect": 0.0,
+      "second_planner": "Adaptive Without Thermal",
+      "test_status": "all_paired_differences_zero",
+      "two_sided_p_value": 1.0
+    },
+    {
+      "first_planner": "Greedy Repair",
+      "mean_advantage": 42.87985937777777,
+      "median_advantage": 42.876284000000055,
+      "nonzero_pair_count": 180,
+      "pair_count": 180,
+      "rank_biserial_effect": 1.0,
+      "second_planner": "Adaptive Without Thermal",
+      "test_status": "computed",
+      "two_sided_p_value": 2.3265223312588205e-31
+    },
+    {
+      "first_planner": "Greedy Repair",
+      "mean_advantage": 42.87985937777777,
+      "median_advantage": 42.876284000000055,
+      "nonzero_pair_count": 180,
+      "pair_count": 180,
+      "rank_biserial_effect": 1.0,
+      "second_planner": "TripMates Lite",
+      "test_status": "computed",
+      "two_sided_p_value": 2.3265223312588205e-31
+    },
+    {
+      "first_planner": "Static Utility",
+      "mean_advantage": 0.39994783333333306,
+      "median_advantage": 0.0,
+      "nonzero_pair_count": 9,
+      "pair_count": 90,
+      "rank_biserial_effect": 1.0,
+      "second_planner": "Adaptive Without Thermal",
+      "test_status": "computed",
+      "two_sided_p_value": 0.007212578345957219
+    },
+    {
+      "first_planner": "Static Utility",
+      "mean_advantage": 0.39994783333333306,
+      "median_advantage": 0.0,
+      "nonzero_pair_count": 9,
+      "pair_count": 90,
+      "rank_biserial_effect": 1.0,
+      "second_planner": "TripMates Lite",
+      "test_status": "computed",
+      "two_sided_p_value": 0.007212578345957219
+    }
+  ],
+  "pair_count_total": 738,
+  "pairings": [
+    {
+      "first_planner": "TripMates Lite",
+      "second_planner": "Adaptive Without Thermal"
+    },
+    {
+      "first_planner": "Greedy Repair",
+      "second_planner": "Adaptive Without Thermal"
+    },
+    {
+      "first_planner": "Greedy Repair",
+      "second_planner": "TripMates Lite"
+    },
+    {
+      "first_planner": "Static Utility",
+      "second_planner": "Adaptive Without Thermal"
+    },
+    {
+      "first_planner": "Static Utility",
+      "second_planner": "TripMates Lite"
+    }
+  ],
+  "seed_interpretation": "Seeds are repeated stochastic runs, not independent disruptions. Instance-level rows are the appropriate scenario-level unit; overall_pairs rows are descriptive.",
+  "test": "two-sided Wilcoxon signed-rank"
+}

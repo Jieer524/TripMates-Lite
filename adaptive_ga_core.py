@@ -1,26 +1,52 @@
 """
-Build a maximum-10-POI candidate window.
+Bounded-replanning GA core for TripMates Lite.
 
-Both planners use the same size, feasibility rules and mandatory
-handling.
+This module defines the enforceable bounded-repair contract:
 
-Adaptive Without Thermal ranks optional candidates using:
+1. **Locked prefix.**  Visits completed before the disruption trigger
+   are immutable.  The replanner may not reorder, remove or substitute
+   them.
 
-    U / (travel + visit)
+2. **Current activity.**  If the traveller is mid-walking, waiting, or
+   mid-visit at the trigger, the existing scenario semantics apply
+   consistently (see ``simulate_replanning_state``).  A committed
+   walking leg is completed; a committed visit is completed and locked;
+   a waiting interval starts replanning from the trigger time.
 
-TripMates Lite ranks optional candidates using:
+3. **Modifiable suffix only.**  Only the unfinished suffix may be
+   modified by the repair algorithm.
 
-    U / (
-        travel
-        + visit
-        + additional walking exposure
-        + additional visit exposure
-    )
+4. **Bounded window.**  An explicit ``max_modifiable_suffix_activities``
+   parameter caps the number of activities the replanner may place in
+   the repaired suffix.  The default is ``MAXIMUM_CANDIDATE_COUNT`` (10).
+
+5. **Configurable and recorded.**  The bound is configurable via
+   ``BoundedRepairConfig`` and recorded in every experiment
+   configuration and every repair record.
+
+6. **Repair-decision audit.**  Removed, skipped, shifted and replacement
+   POIs are recorded with a reason in ``RepairDecision`` entries.
+
+7. **Explicit failure.**  If no feasible bounded repair exists, an
+   explicit failure result is returned — never a silently infeasible
+   itinerary.
+
+8. **Hard-constraint enforcement.**  The single decoder
+   (``planning_core.decode_route``) is the only feasibility gate.
+   Opening hours, budget, mandatory POIs, route, duplication and
+   end-time constraints are never bypassed.
+
+9. **Shared decoder.**  All adaptive planners use the same decoder and
+   hard constraints.
+
+10. **Planner parity.**  Adaptive Without Thermal and TripMates Lite
+    use identical candidate pools, search budgets and bounded-repair
+    constraints.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
 from itertools import permutations
 import math
 import random
@@ -37,9 +63,7 @@ from ga_core import (
 )
 
 from planning_core import (
-    COST_BUDGET_RM,
-    EXPERIMENT_DAY,
-    TRIP_END_MIN,
+    PlanningConstraints,
     PlanningData,
     ScheduleResult,
     decode_route,
@@ -48,6 +72,7 @@ from planning_core import (
 from scenario_core import (
     ReplanningState,
     ScenarioInstance,
+    get_travel_adjustments,
 )
 
 
@@ -66,6 +91,151 @@ REPLANNING_GA_CONFIG = GAConfig(
 )
 
 MAXIMUM_CANDIDATE_COUNT = 10
+
+
+# ================================================================
+# Bounded-repair configuration
+# ================================================================
+
+@dataclass(frozen=True)
+class BoundedRepairConfig:
+    """Enforceable bounded-repair policy.
+
+    ``candidate_window_size`` controls how many feasible candidates are
+    offered to the optimizer. ``max_modifiable_suffix_activities`` is a
+    separate hard cap on the repaired suffix length.
+
+    This object is recorded in every experiment configuration so that
+    the bounded-repair behaviour can be audited after an experiment.
+    """
+
+    max_modifiable_suffix_activities: int = (
+        MAXIMUM_CANDIDATE_COUNT
+    )
+    candidate_window_size: int | None = None
+
+    def __post_init__(self) -> None:
+        if (
+            self.max_modifiable_suffix_activities
+            < 1
+        ):
+            raise ValueError(
+                "max_modifiable_suffix_activities "
+                "must be at least 1."
+            )
+
+        effective_window = (
+            self.max_modifiable_suffix_activities
+            if self.candidate_window_size is None
+            else self.candidate_window_size
+        )
+        object.__setattr__(self, "candidate_window_size", effective_window)
+
+        if effective_window > MAXIMUM_CANDIDATE_COUNT:
+            raise ValueError(
+                "candidate_window_size "
+                "must not exceed "
+                f"{MAXIMUM_CANDIDATE_COUNT}."
+            )
+
+        if effective_window < 1:
+            raise ValueError("candidate_window_size must be at least 1.")
+
+        if self.max_modifiable_suffix_activities > effective_window:
+            raise ValueError(
+                "max_modifiable_suffix_activities cannot exceed "
+                "candidate_window_size."
+            )
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+# ================================================================
+# Repair-decision audit structures
+# ================================================================
+
+@dataclass(frozen=True)
+class RepairDecision:
+    """A single POI-level repair decision with a reason.
+
+    ``decision_type`` is one of:
+      - ``"retained"``     – original suffix POI kept in the repair.
+      - ``"removed"``      – original suffix POI removed (skipped).
+      - ``"shifted"``      – original suffix POI retained but moved
+                              to a different position.
+      - ``"replacement"``  – a new POI not in the original suffix,
+                              substituted for a removed/skipped POI.
+    """
+
+    poi_id: int
+    decision_type: str
+    reason: str
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class RepairRecord:
+    """Full, auditable record of a bounded-repair outcome.
+
+    Fields:
+      locked_prefix: completed POI IDs before the trigger (immutable).
+      current_activity: what the traveller was doing at the trigger.
+      modified_suffix: POI IDs in the repaired suffix (in order).
+      retained_activities: original suffix POIs kept in the repair.
+      removed_activities: original suffix POIs removed, with reasons.
+      replacements: new POIs introduced, with reasons.
+      failure_status: "success", "no_action", or "infeasible".
+      failure_reason: human-readable reason on failure, else None.
+      bounded_repair_limit: the configured max suffix activities.
+      actual_modification_count: number of suffix activities in the
+                                  repair (len of modified_suffix).
+    """
+
+    locked_prefix: tuple[int, ...]
+    current_activity: str
+    modified_suffix: tuple[int, ...]
+    retained_activities: tuple[int, ...]
+    removed_activities: tuple[RepairDecision, ...]
+    replacements: tuple[RepairDecision, ...]
+    failure_status: str
+    failure_reason: str | None
+    bounded_repair_limit: int
+    actual_modification_count: int
+
+    @property
+    def bounded_repair_feasible(self) -> bool:
+        return self.failure_status != "infeasible"
+
+    def to_dict(self) -> dict:
+        return {
+            "locked_prefix": list(self.locked_prefix),
+            "current_activity": self.current_activity,
+            "modified_suffix": list(self.modified_suffix),
+            "retained_activities": list(
+                self.retained_activities
+            ),
+            "removed_activities": [
+                d.to_dict()
+                for d in self.removed_activities
+            ],
+            "replacements": [
+                d.to_dict()
+                for d in self.replacements
+            ],
+            "failure_status": self.failure_status,
+            "failure_reason": self.failure_reason,
+            "bounded_repair_limit": (
+                self.bounded_repair_limit
+            ),
+            "actual_modification_count": (
+                self.actual_modification_count
+            ),
+            "bounded_repair_feasible": self.bounded_repair_feasible,
+            "failure_reason": self.failure_reason,
+        }
 
 
 # ================================================================
@@ -95,9 +265,12 @@ class AdaptiveProblem:
     locked_travel_min: float
     locked_completed_count: int
     locked_utility: float
+    constraints: PlanningConstraints = PlanningConstraints()
+    bounded_repair_config: BoundedRepairConfig = field(
+        default_factory=BoundedRepairConfig,
+    )
 
-    thermal_aware_candidate_window: bool = False
-    
+
 @dataclass(frozen=True)
 class AdaptiveGARunResult:
     seed: int
@@ -112,6 +285,15 @@ class AdaptiveGARunResult:
     evaluated_chromosome_count: int
     unique_decoded_route_count: int
 
+    # Final first Pareto front, in population order.  Exposed so that
+    # selection-policy ablations can re-select a route from the identical
+    # population without re-running (and therefore perturbing) the GA.
+    # The field is additive: the frozen selection rule still decides
+    # ``selected_solution``.
+    first_front: tuple[EvaluatedSolution, ...] = ()
+
+    repair_record: RepairRecord | None = None
+
 
 # ================================================================
 # Shared route decoding
@@ -122,6 +304,7 @@ def decode_replanned_route(
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
     route: list[int] | tuple[int, ...],
+    constraints: PlanningConstraints | None = None,
 ) -> ScheduleResult:
     """
     Decode a route beginning from the post-trigger state.
@@ -133,10 +316,13 @@ def decode_replanned_route(
     recalculated using disruption multipliers.
     """
 
+    active_constraints = constraints or PlanningConstraints()
+
     travel_adjustments = (
-        scenario_instance
-        .scenario
-        .build_travel_adjustments(data)
+        get_travel_adjustments(
+            data,
+            scenario_instance.scenario,
+        )
     )
 
     return decode_route(
@@ -145,10 +331,10 @@ def decode_replanned_route(
 
         start_poi_id=state.current_poi_id,
         start_time_min=state.replan_start_min,
-        trip_end_min=TRIP_END_MIN,
+        trip_end_min=active_constraints.trip_end_min,
 
-        day_code=EXPERIMENT_DAY,
-        cost_budget_rm=COST_BUDGET_RM,
+        day_code=active_constraints.day_code,
+        cost_budget_rm=active_constraints.cost_budget_rm,
         initial_cost_rm=state.cost_spent_rm,
 
         start_poi_is_visit=False,
@@ -224,6 +410,7 @@ def build_remaining_mandatory_backbone(
     data: PlanningData,
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
+    constraints: PlanningConstraints | None = None,
 ) -> tuple[int, ...]:
     """
     Enumerate all remaining mandatory-POI orders exactly.
@@ -250,6 +437,7 @@ def build_remaining_mandatory_backbone(
                     scenario_instance
                 ),
                 route=(),
+                constraints=constraints,
             )
         )
 
@@ -279,6 +467,7 @@ def build_remaining_mandatory_backbone(
                 scenario_instance
             ),
             route=ordering,
+            constraints=constraints,
         )
 
         if not result.feasible:
@@ -315,6 +504,7 @@ def candidate_has_feasible_insertion(
     scenario_instance: ScenarioInstance,
     mandatory_backbone: tuple[int, ...],
     candidate_poi_id: int,
+    constraints: PlanningConstraints | None = None,
 ) -> bool:
     """
     Check whether a candidate can be inserted while preserving all
@@ -329,6 +519,7 @@ def candidate_has_feasible_insertion(
                 scenario_instance
             ),
             route=mandatory_backbone,
+            constraints=constraints,
         )
 
         return result.feasible
@@ -358,6 +549,7 @@ def candidate_has_feasible_insertion(
                 scenario_instance
             ),
             route=test_route,
+            constraints=constraints,
         )
 
         if result.feasible:
@@ -375,25 +567,16 @@ def calculate_prescreen_score(
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
     candidate_poi_id: int,
-    *,
-    thermal_aware: bool,
 ) -> float:
     """
-    Adaptive Without Thermal:
+    Rank an eligible optional POI using the shared screening rule:
 
         U_j / (T_ij + V_j)
 
-    TripMates Lite:
-
-        U_j /
-        (T_ij + V_j + Ewalk_ij + Evisit_j)
-
-    where:
-
-        Ewalk_ij = T_ij(M_s - 1)
-
-        Evisit_j =
-            V_j(1 - I_j)(1 - S_j)(M_s - 1)
+    The candidate window is deliberately identical for Adaptive
+    Without Thermal and TripMates Lite. Thermal information affects
+    only Pareto evaluation and final route selection, not which
+    candidates enter the bounded search space.
     """
 
     poi = data.pois[
@@ -411,10 +594,9 @@ def calculate_prescreen_score(
             )
         )
 
-        adjustments = (
-            scenario_instance
-            .scenario
-            .build_travel_adjustments(data)
+        adjustments = get_travel_adjustments(
+            data,
+            scenario_instance.scenario,
         )
 
         travel_min = adjustments.apply(
@@ -432,40 +614,6 @@ def calculate_prescreen_score(
         + visit_min
     )
 
-    if thermal_aware:
-        thermal_multiplier = (
-            scenario_instance
-            .scenario
-            .thermal_multiplier
-        )
-
-        exposed_fraction = (
-            (1.0 - poi.indoor_ratio)
-            * (1.0 - poi.shelter_ratio)
-        )
-
-        additional_walking_exposure = (
-            travel_min
-            * (
-                thermal_multiplier
-                - 1.0
-            )
-        )
-
-        additional_visit_exposure = (
-            visit_min
-            * exposed_fraction
-            * (
-                thermal_multiplier
-                - 1.0
-            )
-        )
-
-        denominator += (
-            additional_walking_exposure
-            + additional_visit_exposure
-        )
-
     if denominator <= 0:
         raise ValueError(
             "Candidate pre-screen denominator "
@@ -482,11 +630,15 @@ def build_shared_candidate_window(
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
     mandatory_backbone: tuple[int, ...],
-    *,
-    thermal_aware: bool,
+    constraints: PlanningConstraints | None = None,
+    bounded_repair_config: BoundedRepairConfig | None = None,
 ) -> CandidateWindow:
     """
-    Build a maximum-10-POI candidate window.
+    Build a bounded candidate window.
+
+    The maximum number of candidates is
+    ``bounded_repair_config.max_modifiable_suffix_activities``
+    (default ``MAXIMUM_CANDIDATE_COUNT`` = 10).
 
     Rules:
 
@@ -497,6 +649,12 @@ def build_shared_candidate_window(
     4. Fill remaining positions using U / (travel + visit).
     5. Use lower POI ID as the final deterministic tie-breaker.
     """
+
+    active_bounded_repair = (
+        bounded_repair_config or BoundedRepairConfig()
+    )
+
+    window_limit = active_bounded_repair.candidate_window_size
 
     completed_ids = set(
         state.completed_poi_ids
@@ -512,12 +670,12 @@ def build_shared_candidate_window(
         )
     )
 
-    if len(mandatory_ids) > (
-        MAXIMUM_CANDIDATE_COUNT
-    ):
+    if len(mandatory_ids) > window_limit:
         raise RuntimeError(
             "The number of remaining mandatory POIs "
-            "exceeds the candidate-window limit."
+            f"({len(mandatory_ids)}) exceeds the "
+            "bounded-repair window limit "
+            f"({window_limit})."
         )
 
     possible_ids = sorted(
@@ -565,6 +723,7 @@ def build_shared_candidate_window(
                 candidate_poi_id=(
                     candidate_poi_id
                 ),
+                constraints=constraints,
             )
         )
 
@@ -579,9 +738,6 @@ def build_shared_candidate_window(
             ),
             candidate_poi_id=(
                 candidate_poi_id
-            ),
-            thermal_aware=(
-                thermal_aware
             ),
         )
 
@@ -604,10 +760,7 @@ def build_shared_candidate_window(
         )
     )
 
-    remaining_slots = (
-        MAXIMUM_CANDIDATE_COUNT
-        - len(mandatory_ids)
-    )
+    remaining_slots = window_limit - len(mandatory_ids)
 
     selected_optional_ids = tuple(
         poi_id
@@ -634,12 +787,10 @@ def build_shared_candidate_window(
         for poi_id in selected_optional_ids
     )
 
-    if len(all_candidate_ids) > (
-        MAXIMUM_CANDIDATE_COUNT
-    ):
+    if len(all_candidate_ids) > window_limit:
         raise RuntimeError(
             "Candidate window exceeded "
-            "the maximum size."
+            "the bounded-repair limit."
         )
 
     return CandidateWindow(
@@ -670,9 +821,32 @@ def prepare_adaptive_problem(
     initial_schedule: ScheduleResult,
     state: ReplanningState,
     scenario_instance: ScenarioInstance,
-    *,
-    thermal_aware_candidate_window: bool = False,
+    constraints: PlanningConstraints | None = None,
+    bounded_repair_config: BoundedRepairConfig | None = None,
 ) -> AdaptiveProblem:
+    active_constraints = constraints or PlanningConstraints()
+    active_bounded_repair = (
+        bounded_repair_config or BoundedRepairConfig()
+    )
+
+    mandatory_ids = tuple(
+        sorted(state.remaining_mandatory_ids)
+    )
+
+    if (
+        len(mandatory_ids)
+        > active_bounded_repair
+        .max_modifiable_suffix_activities
+    ):
+        raise RuntimeError(
+            f"{state.instance_id}: the number of remaining "
+            f"mandatory POIs ({len(mandatory_ids)}) exceeds "
+            "the bounded-repair limit "
+            f"({active_bounded_repair}"
+            f".max_modifiable_suffix_activities). "
+            "No feasible bounded repair can exist."
+        )
+
     mandatory_backbone = (
         build_remaining_mandatory_backbone(
             data=data,
@@ -680,6 +854,7 @@ def prepare_adaptive_problem(
             scenario_instance=(
                 scenario_instance
             ),
+            constraints=active_constraints,
         )
     )
 
@@ -693,8 +868,9 @@ def prepare_adaptive_problem(
             mandatory_backbone=(
                 mandatory_backbone
             ),
-            thermal_aware=(
-                thermal_aware_candidate_window
+            constraints=active_constraints,
+            bounded_repair_config=(
+                active_bounded_repair
             ),
         )
     )
@@ -734,11 +910,126 @@ def prepare_adaptive_problem(
         locked_utility=(
             state.utility_achieved
         ),
-
-        thermal_aware_candidate_window=(
-            thermal_aware_candidate_window
+        constraints=active_constraints,
+        bounded_repair_config=(
+            active_bounded_repair
         ),
     )
+
+
+# ================================================================
+# Repair-record builder
+# ================================================================
+
+def build_repair_record(
+    state: ReplanningState,
+    problem: AdaptiveProblem,
+    repaired_route: tuple[int, ...],
+    *,
+    failure_status: str = "success",
+    failure_reason: str | None = None,
+) -> RepairRecord:
+    """Build a ``RepairRecord`` from the problem state and the
+    repaired suffix route.
+
+    The caller is responsible for ensuring the route has been
+    validated by ``decode_replanned_route`` when
+    ``failure_status`` is ``"success"``.
+    """
+
+    original_remaining = set(
+        state.original_remaining_poi_ids
+    )
+
+    repaired_set = set(repaired_route)
+
+    retained = [
+        poi_id
+        for poi_id in state.original_remaining_poi_ids
+        if poi_id in repaired_set
+    ]
+
+    removed = [
+        RepairDecision(
+            poi_id=poi_id,
+            decision_type="removed",
+            reason=(
+                "unavailable (closed by scenario)"
+                if poi_id in set(
+                    state.unavailable_poi_ids
+                )
+                else "skipped (infeasible in bounded repair)"
+            ),
+        )
+        for poi_id in state.original_remaining_poi_ids
+        if poi_id not in repaired_set
+    ]
+
+    replacements = [
+        RepairDecision(
+            poi_id=poi_id,
+            decision_type="replacement",
+            reason=(
+                "substituted for a removed or "
+                "skipped suffix POI"
+            ),
+        )
+        for poi_id in repaired_route
+        if poi_id not in original_remaining
+    ]
+
+    return RepairRecord(
+        locked_prefix=state.completed_poi_ids,
+        current_activity=state.committed_component,
+        modified_suffix=tuple(repaired_route),
+        retained_activities=tuple(retained),
+        removed_activities=tuple(removed),
+        replacements=tuple(replacements),
+        failure_status=failure_status,
+        failure_reason=failure_reason,
+        bounded_repair_limit=(
+            problem
+            .bounded_repair_config
+            .max_modifiable_suffix_activities
+        ),
+        actual_modification_count=len(repaired_route),
+    )
+
+
+def build_failure_repair_record(
+    state: ReplanningState,
+    bounded_repair_limit: int,
+    *,
+    failure_reason: str,
+) -> RepairRecord:
+    """Build a ``RepairRecord`` for an explicit failure outcome."""
+
+    return RepairRecord(
+        locked_prefix=state.completed_poi_ids,
+        current_activity=state.committed_component,
+        modified_suffix=(),
+        retained_activities=(),
+        removed_activities=tuple(
+            RepairDecision(
+                poi_id=poi_id,
+                decision_type="removed",
+                reason=(
+                    "unavailable (closed by scenario)"
+                    if poi_id in set(
+                        state.unavailable_poi_ids
+                    )
+                    else "skipped (no feasible bounded repair)"
+                ),
+            )
+            for poi_id in state.original_remaining_poi_ids
+        ),
+        replacements=(),
+        failure_status="infeasible",
+        failure_reason=failure_reason,
+        bounded_repair_limit=bounded_repair_limit,
+        actual_modification_count=0,
+    )
+
 
 # ================================================================
 # Adaptive chromosome decoder
@@ -793,6 +1084,7 @@ def decode_adaptive_chromosome(
                 problem.scenario_instance
             ),
             route=current_route,
+            constraints=problem.constraints,
         )
     )
 
@@ -802,7 +1094,13 @@ def decode_adaptive_chromosome(
             "is infeasible."
         )
 
+    modification_limit = (
+        problem.bounded_repair_config.max_modifiable_suffix_activities
+    )
+
     for candidate_poi_id in chromosome:
+        if len(current_route) >= modification_limit:
+            break
         feasible_insertions: list[
             tuple[
                 float,
@@ -835,6 +1133,7 @@ def decode_adaptive_chromosome(
                         .scenario_instance
                     ),
                     route=test_route,
+                    constraints=problem.constraints,
                 )
             )
 
@@ -962,11 +1261,9 @@ def build_adaptive_nearest_chromosome(
         problem.state.current_poi_id
     )
 
-    adjustments = (
-        problem
-        .scenario_instance
-        .scenario
-        .build_travel_adjustments(data)
+    adjustments = get_travel_adjustments(
+        data,
+        problem.scenario_instance.scenario,
     )
 
     while remaining_ids:
@@ -1372,10 +1669,22 @@ def run_adaptive_without_thermal_ga(
         )
     )
 
+    final_first_front = tuple(
+        individual.solution
+        for individual in population
+        if individual.pareto_rank == 0
+    )
+
     convergence_generation = (
         route_first_seen[
             final_solution.route
         ]
+    )
+
+    repair_record = build_repair_record(
+        state=problem.state,
+        problem=problem,
+        repaired_route=final_solution.route,
     )
 
     return AdaptiveGARunResult(
@@ -1405,4 +1714,8 @@ def run_adaptive_without_thermal_ga(
         unique_decoded_route_count=len(
             observed_routes
         ),
+
+        first_front=final_first_front,
+
+        repair_record=repair_record,
     )

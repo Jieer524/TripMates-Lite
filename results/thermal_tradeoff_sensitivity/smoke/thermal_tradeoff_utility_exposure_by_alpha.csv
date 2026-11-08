@@ -1,0 +1,5 @@
+instance_id,alpha,median_utility_loss_percent,median_wes_reduction_percent,route_change_count,fallback_count,median_pareto_front_size
+S1_nominal,1.000000,-2.069396,-0.988012,1,0,21.000000
+S1_nominal,0.950000,0.000000,0.000000,0,0,26.000000
+S1_nominal,0.900000,0.000000,0.000000,0,0,26.000000
+S1_nominal,0.850000,11.176204,17.431997,1,0,21.000000

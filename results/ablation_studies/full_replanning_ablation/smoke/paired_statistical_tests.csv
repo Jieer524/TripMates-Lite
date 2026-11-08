@@ -1,0 +1,33 @@
+replanning_scope,replanning_policy,planner,metric,comparison,pairs,statistic,p_value,effect_rank_biserial,status,q_value
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,achieved_utility,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,retained_poi_count,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,original_poi_retention,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,wes,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,total_travel_min,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,changed_activity_count,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,edit_distance_score,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+bounded_suffix,bounded_suffix,Adaptive Without Thermal,runtime_seconds,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,achieved_utility,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,retained_poi_count,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,original_poi_retention,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,-1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,wes,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,total_travel_min,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,changed_activity_count,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,edit_distance_score,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,1.0,computed,1.0
+bounded_suffix,bounded_suffix,TripMates Lite,runtime_seconds,"('bounded_suffix', 'bounded_suffix') vs ('full_itinerary', 'full_replanning_ablation')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,achieved_utility,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,retained_poi_count,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,original_poi_retention,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,wes,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,total_travel_min,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,changed_activity_count,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,edit_distance_score,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,0.0,all_paired_differences_zero,1.0
+full_itinerary,full_replanning_ablation,Adaptive Without Thermal,runtime_seconds,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,achieved_utility,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,retained_poi_count,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,original_poi_retention,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,wes,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,total_travel_min,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,changed_activity_count,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,edit_distance_score,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,-1.0,computed,1.0
+full_itinerary,full_replanning_ablation,TripMates Lite,runtime_seconds,"('full_itinerary', 'full_replanning_ablation') vs ('bounded_suffix', 'bounded_suffix')",1,0.0,1.0,1.0,computed,1.0
