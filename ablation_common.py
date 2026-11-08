@@ -42,6 +42,7 @@ from typing import Iterable, Sequence
 import pandas as pd
 
 from adaptive_ga_core import (
+    BoundedRepairConfig,
     REPLANNING_GA_CONFIG,
     prepare_adaptive_problem,
     run_adaptive_without_thermal_ga,
@@ -911,6 +912,7 @@ def run_cell(
     planners: Sequence[str] = ALL_PLANNERS,
     state_override=None,
     static_distance_inputs=None,
+    bounded_repair_config: BoundedRepairConfig | None = None,
 ) -> list[dict]:
     """Run each planner once on identical inputs and return records.
 
@@ -1012,6 +1014,7 @@ def run_cell(
                 scenario_instance=scenario_instance,
                 seed=seed,
                 state_override=state_override,
+                bounded_repair_config=bounded_repair_config,
             )
         )
 
@@ -1029,6 +1032,7 @@ def _adaptive_record(
     scenario_instance: ScenarioInstance,
     seed: int,
     state_override,
+    bounded_repair_config: BoundedRepairConfig | None = None,
 ) -> dict:
     started_at = time.perf_counter()
 
@@ -1048,6 +1052,7 @@ def _adaptive_record(
             state=state,
             scenario_instance=scenario_instance,
             constraints=constraints,
+            bounded_repair_config=bounded_repair_config,
         )
     except (RuntimeError, ValueError, KeyError) as error:
         return failure_record(

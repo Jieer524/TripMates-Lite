@@ -377,3 +377,7 @@ python test_smoke_output_isolation.py    # smoke must not overwrite official res
 - **[REPO_GUIDE.md](REPO_GUIDE.md)** — architecture, function-level module notes, experiment design and artefacts, result interpretation, extension guide
 - `documents/` — thesis drafts (local, not tracked)
 - `output/` — presentation decks and figures (local, not tracked)
+
+### Exploratory sensitivity studies
+
+Candidate-window sensitivity is available with `python run_candidate_window_sensitivity.py --smoke`; levels 5, 10, 15, and all eligible candidates are written to `results/ablation_studies/candidate_window_sensitivity/`. The modification limit remains independently fixed at 10, so 10 remains the proposed configuration and 15/all-eligible are exploratory search-space conditions. Utility-weight sensitivity is available with `python run_utility_weight_sensitivity.py --smoke` and writes to `results/sensitivity/utility_weights/`. These studies test search-space access and robustness to researcher-assigned utility assumptions; neither replaces the confirmatory benchmark or licenses retroactive tuning.

@@ -972,3 +972,5 @@ Add a `ScenarioDefinition` to `scenario_core.SCENARIOS` (offset plus thermal mul
 ---
 
 *This guide was written by reading every file in the repository at its current state (`main` branch); all figures come from the artefacts under `results/`.*
+
+Candidate-window sensitivity uses 5, 10, 15, and all-eligible candidates while holding the maximum modifiable suffix at 10. Utility sensitivity is exploratory and perturbs the implemented composite `utility_score` because source rating/popularity/zone component columns are not present in the current dataset. Both preserve matched inputs, explicit failures, manifests, and smoke isolation.

@@ -112,7 +112,7 @@ class BoundedRepairConfig:
     max_modifiable_suffix_activities: int = (
         MAXIMUM_CANDIDATE_COUNT
     )
-    candidate_window_size: int | None = None
+    candidate_window_size: int | str | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -123,6 +123,11 @@ class BoundedRepairConfig:
                 "max_modifiable_suffix_activities "
                 "must be at least 1."
             )
+        if self.max_modifiable_suffix_activities > MAXIMUM_CANDIDATE_COUNT:
+            raise ValueError(
+                "max_modifiable_suffix_activities must not exceed "
+                f"{MAXIMUM_CANDIDATE_COUNT}."
+            )
 
         effective_window = (
             self.max_modifiable_suffix_activities
@@ -131,21 +136,15 @@ class BoundedRepairConfig:
         )
         object.__setattr__(self, "candidate_window_size", effective_window)
 
-        if effective_window > MAXIMUM_CANDIDATE_COUNT:
-            raise ValueError(
-                "candidate_window_size "
-                "must not exceed "
-                f"{MAXIMUM_CANDIDATE_COUNT}."
-            )
-
-        if effective_window < 1:
+        if effective_window != "all" and effective_window > 0 and effective_window < 1:
             raise ValueError("candidate_window_size must be at least 1.")
 
-        if self.max_modifiable_suffix_activities > effective_window:
-            raise ValueError(
-                "max_modifiable_suffix_activities cannot exceed "
-                "candidate_window_size."
-            )
+        if effective_window != "all" and effective_window < 1:
+            raise ValueError("candidate_window_size must be at least 1.")
+
+        # The candidate window and the repaired-suffix limit are deliberately
+        # independent controls. A small candidate window simply offers fewer
+        # choices; it must not rewrite the separately configured repair cap.
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -670,6 +669,8 @@ def build_shared_candidate_window(
         )
     )
 
+    if window_limit == "all":
+        window_limit = len(data.pois)
     if len(mandatory_ids) > window_limit:
         raise RuntimeError(
             "The number of remaining mandatory POIs "

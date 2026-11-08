@@ -536,6 +536,11 @@ def build_metric_record(
             if repair_record is None
             else len(repair_record.replacements)
         ),
+        "replacement_poi_count": (
+            None
+            if repaired_route is None
+            else len(set(repaired_route) - set(original_remaining))
+        ),
         "removed_pois_with_reasons": (
             []
             if repair_record is None
