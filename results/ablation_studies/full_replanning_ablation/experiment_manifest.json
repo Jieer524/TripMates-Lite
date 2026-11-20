@@ -1,0 +1,101 @@
+{
+  "study": "full_replanning_ablation",
+  "experiment": "full_replanning_ablation (TripMates Lite)",
+  "mode": "full_run",
+  "result_class": "exploratory_sensitivity",
+  "confirmatory": false,
+  "confirmatory_note": "This study is an exploratory sensitivity analysis. Confirmatory evidence is the frozen RQ1 benchmark (results/rq1_full_benchmark) and the frozen weather ablation (results/weather_ablation). No claim of superiority may be based on this directory alone.",
+  "timestamp_utc": "2026-11-11T10:00:05.092058+00:00",
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "factor_specification": {
+    "levels": [
+      {
+        "replanning_scope": "bounded_suffix",
+        "replanning_policy": "bounded_suffix"
+      },
+      {
+        "replanning_scope": "full_itinerary",
+        "replanning_policy": "full_replanning_ablation"
+      }
+    ],
+    "identical_inputs": true,
+    "study_started_utc": "2026-11-11T10:00:05.087193+00:00"
+  },
+  "run_count": 420,
+  "failure_count": 60,
+  "total_runtime_seconds": 201.588,
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "stability_metric_module": "stability_metrics.py",
+  "metric_schema": "benchmark_common.build_metric_record",
+  "inputs": {
+    "poi_catalogue": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    },
+    "initial_routes": {
+      "file": "initial_routes_by_seed.json",
+      "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+      "bytes": 873
+    }
+  },
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpu_count": 12,
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  },
+  "source_script": "run_gap_experiments.py",
+  "instances": [
+    "S1_nominal",
+    "S2_nominal",
+    "S3_nominal",
+    "S4_nominal",
+    "S5_nominal",
+    "S6_nominal"
+  ],
+  "output_root": "results\\ablation_studies"
+}

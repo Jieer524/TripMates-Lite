@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import platform
+import os
 import sys
 from pathlib import Path
 from typing import Iterable
@@ -108,6 +109,7 @@ def runtime_metadata() -> dict:
         "platform": platform.platform(),
         "processor": platform.processor(),
         "machine": platform.machine(),
+        "logical_cpu_count": os.cpu_count(),
         "numpy_version": numpy.__version__,
     }
 
@@ -227,6 +229,7 @@ class StaticSuffixEvaluation:
     repaired_route: tuple[int, ...]
     schedule: ScheduleResult | None
     executed_poi_count: int
+    skipped_pois: tuple[dict, ...] = ()
 
 
 def evaluate_static_suffix(
@@ -269,6 +272,73 @@ def evaluate_static_suffix(
         executed_poi_count=len(
             result.completed_sequence
         ),
+    )
+
+
+def evaluate_static_suffix_skip_and_continue(
+    *, data: PlanningData, state, scenario_instance: ScenarioInstance,
+    constraints: PlanningConstraints,
+) -> StaticSuffixEvaluation:
+    """Evaluate the planned static protocol without substitutions.
+
+    The original order is preserved. Optional future POIs that cannot be
+    appended feasibly (including unavailable or horizon-infeasible stops) are
+    skipped and evaluation continues. Mandatory failures remain explicit.
+    """
+    from adaptive_ga_core import decode_replanned_route
+
+    route: list[int] = list(state.original_remaining_poi_ids)
+    skipped: list[dict] = []
+    mandatory = set(state.remaining_mandatory_ids)
+    unavailable = set(state.unavailable_poi_ids)
+    current_result = decode_replanned_route(
+        data=data, state=state, scenario_instance=scenario_instance,
+        route=route, constraints=constraints,
+    )
+    if current_result.feasible:
+        return StaticSuffixEvaluation(True, None, tuple(route), current_result,
+                                      len(route), tuple(skipped))
+
+    # Remove only optional stops, in original order, until the unchanged
+    # route becomes feasible. Mandatory stops are never silently removed.
+    for poi_id in list(state.original_remaining_poi_ids):
+        if poi_id in mandatory:
+            continue
+        is_mandatory = poi_id in mandatory
+        reason = None
+        if poi_id in unavailable:
+            reason = "unavailable"
+        else:
+            trial_route = [x for x in route if x != poi_id]
+            candidate = decode_replanned_route(
+                data=data, state=state, scenario_instance=scenario_instance,
+                route=trial_route, constraints=constraints,
+            )
+            if candidate.feasible:
+                route = trial_route
+                skipped.append({"poi_id": int(poi_id), "reason": "skipped to restore feasibility"})
+                return StaticSuffixEvaluation(True, None, tuple(route), candidate,
+                                              len(route), tuple(skipped))
+            reason = candidate.failure_reason or "infeasible under shared decoder"
+        route = [x for x in route if x != poi_id]
+        skipped.append({"poi_id": int(poi_id), "reason": str(reason)})
+
+    # If optional removal did not restore feasibility, report the first
+    # remaining mandatory or hard-constraint failure explicitly.
+    final_result = decode_replanned_route(
+        data=data, state=state, scenario_instance=scenario_instance,
+        route=route, constraints=constraints,
+    )
+    if not final_result.feasible:
+        missing = sorted(set(state.remaining_mandatory_ids) - set(route))
+        reason = final_result.failure_reason or "mandatory or hard-constraint failure"
+        if missing:
+            reason = f"mandatory POIs unresolved {missing}: {reason}"
+        return StaticSuffixEvaluation(False, reason, tuple(route), None,
+                                      len(route), tuple(skipped))
+
+    return StaticSuffixEvaluation(
+        True, None, tuple(route), final_result, len(route), tuple(skipped)
     )
 
 

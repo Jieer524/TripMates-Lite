@@ -29,7 +29,7 @@ STABILITY = {
     "itinerary_edit_distance", "locked_prefix_violation",
 }
 OFFICIAL_DIRS = (
-    RESULTS / "rq1_full_benchmark",
+    RESULTS / "rq1_full_benchmark_corrected_static_rule",
     RESULTS / "weather_ablation",
     RESULTS / "thermal_tradeoff_sensitivity_alpha_independent_v2",
     RESULTS / "ablation_studies" / "stability_ablation",

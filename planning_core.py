@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Iterable, Mapping
+from functools import lru_cache
 
 import math
 import pandas as pd
@@ -78,6 +79,7 @@ def parse_clock(value: object) -> int:
     return hour * 60 + minute
 
 
+@lru_cache(maxsize=8192)
 def format_clock(absolute_minute: float) -> str:
     """
     Convert an absolute minute value into HH:MM.
@@ -155,6 +157,7 @@ class POI:
     indoor_ratio: float
     shelter_ratio: float
 
+    @lru_cache(maxsize=256)
     def get_opening_window(
         self,
         day_code: str,

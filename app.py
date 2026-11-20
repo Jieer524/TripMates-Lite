@@ -15,6 +15,7 @@ MATRIX_FILE = ROOT / "walking_time_matrix_final.csv"
 HISTORY_FILE = ROOT / "data" / "itinerary_history.sqlite3"
 WEATHER_CACHE_FILE = ROOT / "data" / "weather_profile.json"
 KUALA_LUMPUR = {"latitude": 3.1390, "longitude": 101.6869}
+HOT_WEATHER_CATEGORIES = frozenset({"hot", "hot_humid"})
 
 # The thesis benchmark remains the default in the GA modules.  These smaller
 # populations are used only by the interactive UI so a visitor can explore a
@@ -36,7 +37,30 @@ def time_to_minutes(value: time) -> int:
 
 
 def weather_emoji(category: str) -> str:
-    return {"rain": "🌧️", "hot": "☀️", "normal": "⛅"}.get(category, "🌤️")
+    return {
+        "rain": "🌧️",
+        "hot": "☀️",
+        "hot_humid": "🌡️",
+        "normal": "⛅",
+    }.get(category, "🌤️")
+
+
+def weather_category_label(category: str) -> str:
+    return {
+        "rain": "Rain",
+        "hot": "High heat",
+        "hot_humid": "Hot and humid",
+        "normal": "Normal conditions",
+        "unavailable": "Weather unavailable",
+    }.get(category, category.replace("_", " ").title())
+
+
+def automatic_scenario_id(category: str) -> str | None:
+    if category == "rain":
+        return "S1"
+    if category in HOT_WEATHER_CATEGORIES:
+        return "S5"
+    return None
 
 
 def weather_label(code: int | None) -> str:
@@ -57,6 +81,16 @@ def inject_styles(st) -> None:
         .block-container { max-width: 1180px; padding-top: 2.2rem; }
         [data-testid="stSidebar"] { background: #102a24; }
         [data-testid="stSidebar"] * { color: #f4fbf7; }
+        [data-testid="stSidebar"] button {
+          background: #23a17f;
+          border: 1px solid #23a17f;
+          color: #ffffff;
+        }
+        [data-testid="stSidebar"] button:hover {
+          background: #8fe4c8;
+          border-color: #8fe4c8;
+          color: #102a24;
+        }
         .hero { background: linear-gradient(120deg,#0d3b31,#126d5b 60%,#23a17f);
           border-radius:22px;color:#fff;padding:2rem 2.2rem;margin-bottom:1.4rem;
           box-shadow:0 12px 28px rgba(14,65,53,.18); }
@@ -156,7 +190,7 @@ def render_route_map(st, schedule, pois, *, key: str) -> None:
     selected_poi = pois[selected_entry.poi_id]
     outdoor_percent = max(
         0.0,
-        100.0 * (1.0 - selected_poi.indoor_ratio - selected_poi.shelter_ratio),
+        100.0 * (1.0 - selected_poi.indoor_ratio) * (1.0 - selected_poi.shelter_ratio),
     )
     with detail_col:
         st.markdown(
@@ -174,12 +208,14 @@ def render_route_map(st, schedule, pois, *, key: str) -> None:
         )
 
 
-def render_schedule(st, schedule, pois, *, title: str, key: str) -> None:
-    st.subheader(title)
-    render_route_map(st, schedule, pois, key=key)
-    st.markdown("#### At a glance")
+def render_activity_timeline(st, entries, *, title: str) -> None:
+    st.markdown(f"#### {title}")
+    if not entries:
+        st.info("No visits are in this itinerary segment.")
+        return
+
     timeline_columns = st.columns(2)
-    for index, item in enumerate(schedule.entries):
+    for index, item in enumerate(entries):
         with timeline_columns[index % 2]:
             st.markdown(
                 f"""<div class="route-stop">
@@ -189,6 +225,24 @@ def render_schedule(st, schedule, pois, *, title: str, key: str) -> None:
                 </div>""",
                 unsafe_allow_html=True,
             )
+
+
+def render_schedule(
+    st,
+    schedule,
+    pois,
+    *,
+    title: str,
+    key: str,
+    timeline_title: str = "At a glance",
+) -> None:
+    st.subheader(title)
+    render_route_map(st, schedule, pois, key=key)
+    render_activity_timeline(
+        st,
+        schedule.entries,
+        title=timeline_title,
+    )
     st.markdown("#### Trip metrics")
     metrics = st.columns(4)
     metrics[0].metric("Stops", len(schedule.entries))
@@ -290,6 +344,20 @@ def render_saved_view(st, history, service) -> None:
         key=f"saved_{stored.record.run_id}",
     )
     render_saved_summary(st, stored, service.data.pois)
+    st.divider()
+    st.caption("Delete this saved itinerary if you no longer need it.")
+    confirm_delete = st.checkbox(
+        "I understand this saved itinerary will be permanently deleted.",
+        key=f"confirm_delete_{stored.record.run_id}",
+    )
+    if st.button(
+        "Delete itinerary",
+        key=f"delete_{stored.record.run_id}",
+        disabled=not confirm_delete,
+    ):
+        if history.delete(stored.record.run_id):
+            st.success("Saved itinerary deleted.")
+            st.rerun()
 
 
 def main() -> None:
@@ -339,7 +407,11 @@ def main() -> None:
         profile = st.session_state["weather_profile"]
         temperature = f"{profile.temperature_c:.0f}°C" if profile.temperature_c is not None else "Unavailable"
         st.markdown(f"### {weather_emoji(profile.category)} {temperature}\n{weather_label(profile.weather_code)}")
-        st.caption(f"Open-Meteo · {profile.source_type} · comfort multiplier {profile.thermal_multiplier:.1f}×")
+        st.caption(
+            f"{weather_category_label(profile.category)} · Open-Meteo · "
+            f"{profile.source_type} · comfort multiplier "
+            f"{profile.thermal_multiplier:.1f}×"
+        )
         if profile.fallback_reason:
             st.caption("Using saved or predefined conditions because live weather was unavailable.")
         if st.button("Refresh weather", width="stretch"):
@@ -358,10 +430,15 @@ def main() -> None:
         st.warning(
             "Live rain detected. Automatic weather mode will use the thermal-aware Heavy Rain response."
         )
-    elif profile.category == "hot":
-        st.warning(
-            "High heat detected. Automatic weather mode will use the thermal-aware Heatwave response."
+    elif profile.category in HOT_WEATHER_CATEGORIES:
+        message = (
+            "High heat and humidity detected. Automatic weather mode will use the "
+            "thermal-aware Heatwave response."
+            if profile.category == "hot_humid"
+            else "High heat detected. Automatic weather mode will use the "
+            "thermal-aware Heatwave response."
         )
+        st.warning(message)
     else:
         st.info(
             "Live conditions are normal. Automatic weather mode will keep the initial itinerary."
@@ -443,10 +520,7 @@ def main() -> None:
             else:
                 scenario_id = None
                 if scenario_choice == "Use live weather automatically":
-                    if profile.category == "rain":
-                        scenario_id = "S1"
-                    elif profile.category == "hot":
-                        scenario_id = "S5"
+                    scenario_id = automatic_scenario_id(profile.category)
                 elif scenario_choice != "Normal conditions":
                     scenario_id = scenario_choice.split()[0]
 
@@ -471,7 +545,25 @@ def main() -> None:
         st.divider()
         if replan.status == "success":
             st.success(replan.explanation)
-            render_schedule(st, replan.repaired_schedule, service.data.pois, title="Your adapted itinerary", key="adapted")
+            prefix_ids = set(replan.state.completed_poi_ids)
+            completed_prefix_entries = tuple(
+                entry
+                for entry in initial.schedule.entries
+                if entry.poi_id in prefix_ids
+            )
+            render_activity_timeline(
+                st,
+                completed_prefix_entries,
+                title="Completed / committed portion",
+            )
+            render_schedule(
+                st,
+                replan.repaired_schedule,
+                service.data.pois,
+                title="Your adapted itinerary",
+                key="adapted",
+                timeline_title="Revised unfinished portion",
+            )
             metric_columns = st.columns(3)
             metric_columns[0].metric("Weather exposure score", f"{replan.exposure.weather_weighted_exposure_score:.1f}")
             metric_columns[1].metric("Outdoor exposure", f"{replan.exposure.total_outdoor_exposure_min:.0f} min")

@@ -116,6 +116,7 @@ class ItineraryHistoryRepository:
                     run_id TEXT NOT NULL,
                     metric_name TEXT NOT NULL,
                     metric_value REAL NOT NULL,
+                    unit TEXT NOT NULL DEFAULT '',
                     PRIMARY KEY (run_id, metric_name),
                     FOREIGN KEY (run_id) REFERENCES itinerary_run(run_id)
                         ON DELETE CASCADE
@@ -145,6 +146,16 @@ class ItineraryHistoryRepository:
                 connection.execute(
                     "ALTER TABLE itinerary_run ADD COLUMN itinerary_name "
                     "TEXT NOT NULL DEFAULT 'Untitled itinerary'"
+                )
+            metric_columns = {
+                str(row["name"])
+                for row in connection.execute(
+                    "PRAGMA table_info(itinerary_metric)"
+                ).fetchall()
+            }
+            if "unit" not in metric_columns:
+                connection.execute(
+                    "ALTER TABLE itinerary_metric ADD COLUMN unit TEXT NOT NULL DEFAULT ''"
                 )
 
     def save(
@@ -237,11 +248,11 @@ class ItineraryHistoryRepository:
             connection.executemany(
                 """
                 INSERT INTO itinerary_metric (
-                    run_id, metric_name, metric_value
-                ) VALUES (?, ?, ?)
+                    run_id, metric_name, metric_value, unit
+                ) VALUES (?, ?, ?, ?)
                 """,
                 [
-                    (run_id, str(name), float(value))
+                    (run_id, str(name), float(value), "")
                     for name, value in metrics.items()
                 ],
             )

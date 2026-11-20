@@ -202,7 +202,7 @@ The score is deterministic: every component is an integer count, ordering follow
 
 - **Under the frozen policy (alpha = 0.90) the thermal objective never changes the selected route.** All 90 paired ablation runs show a WES difference of exactly zero, and across 180 RQ1 runs TripMates and Adaptive produce identical utility, walking time and WES (the guardrail falls back to the non-thermal reference every time).
 - **A trade-off appears only when utility retention is relaxed.** In the C2 sensitivity run, alpha = 0.85 reduces WES by **35.2 min on average** (median 53.1, effect size +1.00, Holm-adjusted p ~ 1.7e-14) at the cost of utility and visit count; alpha = 1.00 is actually 14.1 min worse.
-- **Replanning is necessary.** Both static baselines are feasible in only **50% of the 18 instances** — replaying the remaining sequence breaks outright under S2/S3/S4.
+- **Adaptive replanning improves recovery quality.** Under the predeclared skip-and-continue static rule, both static baselines remain feasible, but Adaptive Without Thermal and TripMates Lite achieve higher itinerary completion and utility in the matched benchmark.
 - **The cost is latency.** Greedy ~3 ms, Adaptive ~0.5–1.7 s, TripMates ~3.5 s (S1_early, 30 repetitions).
 
 ---
@@ -272,7 +272,7 @@ Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke
 | `static_utility_baseline.py` | 10 seeds x 80x120 GA, frozen initial routes | 10 | `results/static_utility/` |
 | `static_distance_baseline.py` | nearest neighbour + mandatory-feasibility gate | 1 | `static_distance_normal_*` |
 | `run_weather_ablation_all_seeds.py` | S1/S5/S6 x 3 triggers x 10 seeds, paired planners | 90 pairs | `results/weather_ablation/` |
-| `run_rq1_full_benchmark.py` | 5 planners x 18 instances | 738 runs | `results/rq1_full_benchmark/` |
+| `run_rq1_full_benchmark.py` | 5 planners x 18 instances | 738 runs | `results/rq1_full_benchmark_corrected_static_rule/` |
 | `run_thermal_tradeoff_sensitivity.py` | 9 instances x 10 seeds x 4 alphas | 360 runs | `results/thermal_tradeoff_sensitivity_alpha_independent_v2/` |
 | `run_latency_benchmark.py` | 1 warm-up + 30 timed repetitions, 3 scopes | 3 planners x 18 | `results/latency_benchmark/` |
 | `audit_checks.py` | 12 dataset checks (schema / formula / matrix / hashes) | — | `dataset_validation_report.json` |
@@ -282,15 +282,15 @@ Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke
 
 ## Results summary
 
-**RQ1 full benchmark** (`results/rq1_full_benchmark/rq1_overall_planner_summary.csv`)
+**RQ1 full benchmark** (`results/rq1_full_benchmark_corrected_static_rule/rq1_overall_planner_summary.csv`)
 
-| Planner | Feasible | Mean utility | Mean walking min | Mean WES | Median latency |
+| Planner | Feasible | Mean utility | Mean walking min | Mean WES | Median runtime |
 |---|---|---|---|---|---|
-| Static Distance | 50.0% | 49.50 | 61.33 | 278.10 | 0.2 ms |
-| Static Utility | 50.0% | 67.10 | 66.72 | 337.20 | 0.2 ms |
-| Greedy Repair | 100% | 59.42 | 100.06 | 353.38 | 9 ms |
-| Adaptive Without Thermal | 100% | 63.88 | 68.87 | 310.50 | 1.66 s |
-| TripMates Lite | 100% | 63.88 | 68.87 | 310.50 | 2.67 s |
+| Static Distance | 100.0% | 44.17 | 62.00 | 251.46 | 0.4 ms |
+| Static Utility | 100.0% | 54.44 | 66.28 | 285.86 | 0.4 ms |
+| Greedy Repair | 100% | 59.42 | 100.06 | 353.38 | 11.6 ms |
+| Adaptive Without Thermal | 100% | 63.88 | 68.87 | 310.50 | 1.78 s |
+| TripMates Lite | 100% | 63.88 | 68.87 | 310.50 | 3.09 s |
 
 **C2 alpha sensitivity** (WES advantage, positive = TripMates better)
 
@@ -309,18 +309,18 @@ Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke
 streamlit run app.py
 ```
 
-- The sidebar shows live Open-Meteo weather (rain maps to S1, 35 C or above to S5; a scenario can also be chosen manually).
-- After planning: a pydeck map with a slider that reveals the route stop by stop, a two-column timeline, and metric cards.
+- The sidebar shows live Open-Meteo weather (rain maps to S1; temperature at least 35 C or temperature at least 32 C with relative humidity at least 70% maps to S5; a scenario can also be chosen manually).
+- After planning: a pydeck map with a slider that reveals the route stop by stop, a two-column timeline, and metric cards. After replanning, the completed/committed portion and revised unfinished portion are labelled separately.
 - Choose `Quick preview` (12x12, seconds) or `Research benchmark` (80x120 / 40x60, tens of seconds).
-- Trips can be named and saved to `data/itinerary_history.sqlite3`, then reopened under "Saved itineraries".
+- Trips can be named and saved to `data/itinerary_history.sqlite3`, then reopened or deleted under "Saved itineraries".
 
 ---
 
 ## Data and formulas
 
 - **Utility** `U1 = (2*rating + 10*log10(n+1)/log10(max_n+1) + zone_score) / 3`, with `zone_score = A:10 / B:8 / C:6`.
-- **Walking time** = equirectangular straight-line distance / 1.4 m/s / 60 (**no street network**; a lower-bound proxy).
-- **Thermal-exposure proxy (WES):** for POI `j`, `X_j = (1 - indoor_ratio_j)(1 - shelter_ratio_j)`. Walking exposure is walking minutes; visit exposure is `visit_minutes × X_j`. Waiting is explicitly excluded by default (and remains available as a separate optional metric), rather than being silently treated as outdoor exposure. For any activity interval, `weighted = pre_trigger_minutes + M_s × post_trigger_minutes`, so `WES = pre_trigger_exposure + M_s × post_trigger_exposure`. This is a planning proxy based on itinerary metadata, not a medically validated, physiological, or health-risk model.
+- **Walking time** = equirectangular straight-line distance / 1.4 m/s / 60 (**no street network**; a lower-bound proxy). The repository checks matrix shape, symmetry, finite positive connections and route-level connectivity; it does **not** implement physical accessibility features such as wheelchair access, step-free routing, stairs, lifts, slopes or barrier-aware pedestrian navigation.
+- **Thermal-exposure proxy (WES):** for POI `j`, `indoor_ratio_j` is the whole-visit indoor proportion and `shelter_ratio_j` is the conditional proportion of the remaining outdoor visit fraction that is sheltered or shaded. The exposed fraction is `X_j = (1 - indoor_ratio_j)(1 - shelter_ratio_j)`. Walking exposure is walking minutes; visit exposure is `visit_minutes × X_j`. Waiting is explicitly excluded by default (and remains available as a separate optional metric), rather than being silently treated as outdoor exposure. For any activity interval, `weighted = pre_trigger_minutes + M_s × post_trigger_minutes`, so `WES = pre_trigger_exposure + M_s × post_trigger_exposure`. This is a planning proxy based on researcher-assigned itinerary metadata, not a medically validated, physiological, or health-risk model.
 - Weather provenance is recorded as `live`, `cached`, `predefined`, or `unavailable`, with a fallback reason. Temperature and, when present, relative humidity can classify a profile as hot; missing values use the deterministic predefined benchmark profile or explicit unavailable neutral mode, never zero exposure. `exposure_core.py` also exposes total, high-heat, maximum-continuous, travel, visit, and optional waiting exposure metrics.
 - All data is verified by `audit_checks.py`; see `dataset_validation_report.json`.
 
@@ -331,7 +331,7 @@ streamlit run app.py
 1. **The thermal objective has no effect under the frozen policy** (a finding, not a defect); the candidate window is capped at 10 and prioritises mandatory POIs, leaving the front almost no slack.
 2. **The 10 "seeds" are repeated stochastic optimisations, not 10 real disruptions**; the instance is the primary statistical unit.
 3. The walking matrix contains no street network, so walking time is underestimated.
-4. `cache/` holds early Overpass data and is no longer referenced.
+4. Early Overpass snapshots are retained for provenance under `archive/overpass_cache/` and are not referenced by the application.
 5. The repository contains no `LICENSE` file; contact the author before academic reuse.
 
 ---
@@ -339,8 +339,8 @@ streamlit run app.py
 ## Tests
 
 ```bash
-pytest -q                 # full suite: 110 tests, ~2 min
-pytest -q -m "not slow"   # 107 tests, skips the 3 frozen-artefact replays
+pytest -q                 # full suite: 117 tests, includes 3 slow frozen-artefact replays
+pytest -q -m "not slow"   # 114 tests, skips the 3 frozen-artefact replays
 ```
 
 `pytest.ini` puts the repository root on `sys.path` and registers the `slow` marker. The suite has three layers:
@@ -381,3 +381,5 @@ python test_smoke_output_isolation.py    # smoke must not overwrite official res
 ### Exploratory sensitivity studies
 
 Candidate-window sensitivity is available with `python run_candidate_window_sensitivity.py --smoke`; levels 5, 10, 15, and all eligible candidates are written to `results/ablation_studies/candidate_window_sensitivity/`. The modification limit remains independently fixed at 10, so 10 remains the proposed configuration and 15/all-eligible are exploratory search-space conditions. Utility-weight sensitivity is available with `python run_utility_weight_sensitivity.py --smoke` and writes to `results/sensitivity/utility_weights/`. These studies test search-space access and robustness to researcher-assigned utility assumptions; neither replaces the confirmatory benchmark or licenses retroactive tuning.
+
+Full official sensitivity outputs are now available in the corresponding result directories. The planned skip-and-continue static execution rule is the canonical RQ1 protocol. The archived legacy replay results remain available under `results/rq1_full_benchmark/` for comparison. Evidence appendices are under `output/research_final/`.

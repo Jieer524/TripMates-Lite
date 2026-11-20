@@ -1,0 +1,239 @@
+{
+  "study": "disruption_severity_sensitivity",
+  "experiment": "disruption_severity_sensitivity (TripMates Lite)",
+  "mode": "full_run",
+  "result_class": "exploratory_sensitivity",
+  "confirmatory": false,
+  "confirmatory_note": "This study is an exploratory sensitivity analysis. Confirmatory evidence is the frozen RQ1 benchmark (results/rq1_full_benchmark) and the frozen weather ablation (results/weather_ablation). No claim of superiority may be based on this directory alone.",
+  "timestamp_utc": "2026-11-13T07:56:59.926882+00:00",
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "factor_specification": {
+    "levels": [
+      {
+        "family": "travel_delay",
+        "level": "light",
+        "cell_id": "travel_delay_light",
+        "label": "+15% walking time",
+        "trigger_offset_min": 90,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 1.15,
+        "closed_poi_ids": [],
+        "rationale": "Mild network slowdown; below the frozen S2 value of 1.50."
+      },
+      {
+        "family": "travel_delay",
+        "level": "medium",
+        "cell_id": "travel_delay_medium",
+        "label": "+50% walking time",
+        "trigger_offset_min": 90,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 1.5,
+        "closed_poi_ids": [],
+        "rationale": "The frozen S2 network-wide delay multiplier."
+      },
+      {
+        "family": "travel_delay",
+        "level": "severe",
+        "cell_id": "travel_delay_severe",
+        "label": "+100% walking time",
+        "trigger_offset_min": 90,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 2.0,
+        "closed_poi_ids": [],
+        "rationale": "Walking time doubles; still a plausible pedestrian-network failure, above anything in the frozen set."
+      },
+      {
+        "family": "closure",
+        "level": "light",
+        "cell_id": "closure_light",
+        "label": "one optional POI closed",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [
+          33
+        ],
+        "rationale": "POI 33 is an optional high-utility stop present in every frozen initial route, so the repair must substitute it."
+      },
+      {
+        "family": "closure",
+        "level": "medium",
+        "cell_id": "closure_medium",
+        "label": "one mandatory POI closed",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [
+          13
+        ],
+        "rationale": "POI 13 is mandatory, so the closure cannot be absorbed by dropping an optional stop."
+      },
+      {
+        "family": "closure",
+        "level": "severe",
+        "cell_id": "closure_severe",
+        "label": "one mandatory and one optional POI closed",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 1.0,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [
+          13,
+          33
+        ],
+        "rationale": "Removes the mandatory landmark and the highest-utility optional stop at the same time."
+      },
+      {
+        "family": "thermal",
+        "level": "light",
+        "cell_id": "thermal_light",
+        "label": "thermal multiplier 1.30",
+        "trigger_offset_min": 180,
+        "thermal_multiplier": 1.3,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [],
+        "rationale": "Warm but below both frozen thermal scenarios."
+      },
+      {
+        "family": "thermal",
+        "level": "medium",
+        "cell_id": "thermal_medium",
+        "label": "thermal multiplier 1.80",
+        "trigger_offset_min": 180,
+        "thermal_multiplier": 1.8,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [],
+        "rationale": "The frozen S1 heavy-rain thermal multiplier."
+      },
+      {
+        "family": "thermal",
+        "level": "severe",
+        "cell_id": "thermal_severe",
+        "label": "thermal multiplier 2.40",
+        "trigger_offset_min": 180,
+        "thermal_multiplier": 2.4,
+        "global_travel_multiplier": 1.0,
+        "closed_poi_ids": [],
+        "rationale": "Above the frozen S5 heatwave value of 2.00; an extreme-heat stress test, not an observed condition."
+      },
+      {
+        "family": "combined",
+        "level": "light",
+        "cell_id": "combined_light",
+        "label": "mild delay + thermal + optional closure",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 1.3,
+        "global_travel_multiplier": 1.15,
+        "closed_poi_ids": [
+          33
+        ],
+        "rationale": "Combined low-intensity stressors; each uses the light level above."
+      },
+      {
+        "family": "combined",
+        "level": "medium",
+        "cell_id": "combined_medium",
+        "label": "moderate delay + thermal + mandatory closure",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 1.8,
+        "global_travel_multiplier": 1.5,
+        "closed_poi_ids": [
+          13
+        ],
+        "rationale": "Combined medium levels using the frozen S1/S2 conventions."
+      },
+      {
+        "family": "combined",
+        "level": "severe",
+        "cell_id": "combined_severe",
+        "label": "severe delay + thermal + multiple closure",
+        "trigger_offset_min": 150,
+        "thermal_multiplier": 2.4,
+        "global_travel_multiplier": 2.0,
+        "closed_poi_ids": [
+          13,
+          33
+        ],
+        "rationale": "Combined severe stress test; synthetic exploratory condition."
+      }
+    ],
+    "identical_inputs": true,
+    "study_started_utc": "2026-11-13T07:56:59.926882+00:00"
+  },
+  "run_count": 3600,
+  "failure_count": 894,
+  "total_runtime_seconds": 1884.203,
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "stability_metric_module": "stability_metrics.py",
+  "metric_schema": "benchmark_common.build_metric_record",
+  "inputs": {
+    "poi_catalogue": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    },
+    "initial_routes": {
+      "file": "initial_routes_by_seed.json",
+      "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+      "bytes": 873
+    }
+  },
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpu_count": 12,
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  },
+  "source_script": "run_gap_experiments.py",
+  "instances": [
+    "S1_nominal",
+    "S2_nominal",
+    "S3_nominal",
+    "S4_nominal",
+    "S5_nominal",
+    "S6_nominal"
+  ],
+  "output_root": "results\\ablation_studies"
+}

@@ -1,8 +1,12 @@
 """Transparent thermal-exposure proxy calculations.
 
 WES is a planning proxy, not a medical, physiological, or health-risk
-model.  For POI ``j`` the exposed fraction is
-``x_j = (1 - indoor_ratio_j) * (1 - shelter_ratio_j)``. Walking exposure
+model. For POI ``j``, ``indoor_ratio_j`` is the proportion of the visit
+expected to occur indoors. ``shelter_ratio_j`` is the conditional
+proportion of the remaining outdoor visit fraction that is sheltered or
+shaded; it is not a second whole-visit enclosure proportion. The exposed
+fraction is therefore ``x_j = (1 - indoor_ratio_j) * (1 - shelter_ratio_j)``.
+Walking exposure
 is walking minutes; visit exposure is ``visit_minutes * x_j``. Waiting is
 excluded by default and is recorded separately; callers may opt in to
 ``waiting_minutes * waiting_exposed_fraction`` explicitly. For an
@@ -59,6 +63,13 @@ def calculate_exposed_fraction(
     shelter_ratio: float,
 ) -> float:
     """
+    Calculate the sequential exposed-fraction proxy.
+
+    ``indoor_ratio`` is a whole-visit indoor proportion. ``shelter_ratio``
+    is conditional on the remaining outdoor fraction: it represents the
+    share of that outdoor time covered or shaded by outdoor shelter. It
+    must not be interpreted as a second whole-visit enclosure proportion.
+
     X_j = (1 - I_j)(1 - S_j)
     """
 

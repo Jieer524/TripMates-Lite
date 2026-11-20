@@ -1,0 +1,133 @@
+{
+  "study": "stability_ablation",
+  "experiment": "stability_ablation (TripMates Lite)",
+  "mode": "full_run",
+  "result_class": "exploratory_sensitivity",
+  "confirmatory": false,
+  "confirmatory_note": "This study is an exploratory sensitivity analysis. Confirmatory evidence is the frozen RQ1 benchmark (results/rq1_full_benchmark) and the frozen weather ablation (results/weather_ablation). No claim of superiority may be based on this directory alone.",
+  "timestamp_utc": "2026-11-11T10:02:01.260525+00:00",
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "planners": [
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "factor_specification": {
+    "factor": "selection_policy",
+    "levels": [
+      "frozen",
+      "frozen_key_unguarded",
+      "stability_guarded",
+      "stability_unguarded"
+    ],
+    "level_definitions": {
+      "frozen": {
+        "selection_key": "frozen_objective",
+        "guardrail_applied": true,
+        "description": "Published rule: eligible first-front routes only (utility >= 0.90 U*, count >= N* - 1 for the non-thermal planner; the frozen alpha / visit guardrails for the thermal planner), then minimum travel time (non-thermal) or minimum WES (thermal)."
+      },
+      "frozen_key_unguarded": {
+        "selection_key": "frozen_objective",
+        "guardrail_applied": false,
+        "description": "Same key as the published rule but the eligibility guardrail is disabled, so a low-utility, low-travel route on the first front can win."
+      },
+      "stability_guarded": {
+        "selection_key": "stability_penalty",
+        "guardrail_applied": true,
+        "description": "Published eligibility guardrail retained, but the route with the smallest weighted itinerary edit distance wins; ties broken by travel time, then utility, then route."
+      },
+      "stability_unguarded": {
+        "selection_key": "stability_penalty",
+        "guardrail_applied": false,
+        "description": "Smallest weighted itinerary edit distance over the whole first front, with no utility or visit guardrail.  This is the pure stability-first extreme."
+      }
+    },
+    "design": "2 x 2 factorial (selection key x eligibility guardrail) evaluated on one identical Pareto front per planner, scenario and seed.",
+    "scenario_instances": [
+      "S1_nominal",
+      "S2_nominal",
+      "S3_nominal",
+      "S4_nominal",
+      "S5_nominal",
+      "S6_nominal"
+    ],
+    "planners": [
+      "Adaptive Without Thermal",
+      "TripMates Lite"
+    ],
+    "ga_run_count": 120,
+    "records_per_ga_run": 4,
+    "note": "The GA is executed once per (planner, scenario, seed); the four conditions differ only in how a route is chosen from the resulting front, so runtime is shared and reported identically across conditions."
+  },
+  "run_count": 480,
+  "failure_count": 0,
+  "total_runtime_seconds": 109.663,
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "stability_metric_module": "stability_metrics.py",
+  "metric_schema": "benchmark_common.build_metric_record",
+  "inputs": {
+    "poi_catalogue": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    },
+    "initial_routes": {
+      "file": "initial_routes_by_seed.json",
+      "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+      "bytes": 873
+    }
+  },
+  "runtime_metadata": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpu_count": 12,
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  },
+  "primary_contrast": [
+    "frozen",
+    "stability_guarded"
+  ],
+  "direction_note": "The published pipeline applies no stability penalty. The stability conditions are counterfactual additions; this study cannot show that the published method is better or worse, only what a stability term would trade.",
+  "all_planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ]
+}

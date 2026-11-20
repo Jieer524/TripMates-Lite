@@ -1,6 +1,7 @@
 """Exploratory candidate-window sensitivity for the bounded replanner."""
 from __future__ import annotations
 import argparse, json
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 import pandas as pd
 from adaptive_ga_core import BoundedRepairConfig
@@ -12,27 +13,31 @@ OUT = ROOT / "results/ablation_studies/candidate_window_sensitivity"
 LEVELS = (5, 10, 15, "all")
 PLANNERS = (PLANNER_ADAPTIVE, PLANNER_TRIPMATES)
 
-def main(smoke=False):
+def _cell(task):
+    level, seed, instance_id = task
+    inputs = load_study_inputs()
+    cfg = BoundedRepairConfig(candidate_window_size=level, max_modifiable_suffix_activities=10)
+    records = run_cell(data=inputs.data, constraints=inputs.constraints,
+        initial_route=inputs.routes_by_seed[seed], initial_schedule=inputs.schedules_by_seed[seed],
+        scenario_instance=inputs.instance(instance_id), seed=seed,
+        planners=PLANNERS, bounded_repair_config=cfg)
+    for r in records:
+        r.update({"experiment_id":"candidate_window_sensitivity", "candidate_window_size":level,
+                  "maximum_modifiable_suffix_activities":10,
+                  "candidate_window_condition":str(level), "exploratory":True})
+    return records
+
+def main(smoke=False, workers=4):
     out = OUT / "smoke" if smoke else OUT
     out.mkdir(parents=True, exist_ok=True)
     inputs = load_study_inputs()
     seeds = SEEDS[:1] if smoke else SEEDS
     instances = NOMINAL_INSTANCE_IDS[:2] if smoke else NOMINAL_INSTANCE_IDS
     rows = []
-    for level in LEVELS:
-        cfg = BoundedRepairConfig(candidate_window_size=level, max_modifiable_suffix_activities=10)
-        for seed in seeds:
-            route = inputs.routes_by_seed[seed]
-            for instance_id in instances:
-                records = run_cell(data=inputs.data, constraints=inputs.constraints,
-                    initial_route=route, initial_schedule=inputs.schedules_by_seed[seed],
-                    scenario_instance=inputs.instance(instance_id), seed=seed,
-                    planners=PLANNERS, bounded_repair_config=cfg)
-                for r in records:
-                    r.update({"experiment_id":"candidate_window_sensitivity", "candidate_window_size":level,
-                              "maximum_modifiable_suffix_activities":10,
-                              "candidate_window_condition":str(level), "exploratory":True})
-                rows.extend(records)
+    tasks = [(level, seed, instance_id) for level in LEVELS for seed in seeds for instance_id in instances]
+    batches = map(_cell, tasks) if workers <= 1 else ProcessPoolExecutor(max_workers=workers).map(_cell, tasks)
+    for batch in batches:
+        rows.extend(batch)
     frame = pd.DataFrame(rows)
     frame.to_csv(out / "raw_runs.csv", index=False)
     summaries = frame.groupby(["planner","candidate_window_size"], dropna=False).agg(
@@ -50,4 +55,4 @@ def main(smoke=False):
     (out / "README.md").write_text("Exploratory candidate-window sensitivity. Window 10 remains the proposed configuration; 15 and all-eligible test search-space access only. The modification limit is fixed at 10.\n", encoding="utf-8")
 
 if __name__ == "__main__":
-    p=argparse.ArgumentParser(); p.add_argument("--smoke",action="store_true"); main(p.parse_args().smoke)
+    p=argparse.ArgumentParser(); p.add_argument("--smoke",action="store_true"); p.add_argument("--workers",type=int,default=4); a=p.parse_args(); main(a.smoke,a.workers)

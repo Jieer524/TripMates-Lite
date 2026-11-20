@@ -1,31 +1,31 @@
 planner,setting,scope,instance_id,repetition_count,median_seconds,p95_seconds,mean_seconds,std_seconds,min_seconds,max_seconds,failure_count,measured_scope
-Greedy Repair,deterministic_no_ga,engine_only,S1_nominal,3,0.004730400,0.005427900,0.004967700,0.000381083,0.004667300,0.005505400,0,engine_only
-Greedy Repair,deterministic_no_ga,end_to_end_request,S1_nominal,3,0.007212000,0.007836420,0.007400867,0.000360798,0.007084800,0.007905800,0,end_to_end_request
-Greedy Repair,deterministic_no_ga,shared_preparation,S1_nominal,3,0.002417500,0.002475190,0.002433167,0.000034952,0.002400400,0.002481600,0,shared_preparation
-Adaptive Without Thermal,research_benchmark,engine_only,S1_nominal,3,2.077669700,2.089535120,2.079468600,0.008655314,2.069882600,2.090853500,0,engine_only
-Adaptive Without Thermal,research_benchmark,end_to_end_request,S1_nominal,3,2.084444700,2.095967940,2.086055133,0.008557828,2.076472400,2.097248300,0,end_to_end_request
-Adaptive Without Thermal,research_benchmark,shared_preparation,S1_nominal,3,0.006589800,0.006756480,0.006586533,0.000155233,0.006394800,0.006775000,0,shared_preparation
-Adaptive Without Thermal,quick_preview,engine_only,S1_nominal,3,0.270662300,0.276053210,0.272644300,0.002834070,0.270618400,0.276652200,0,engine_only
-Adaptive Without Thermal,quick_preview,end_to_end_request,S1_nominal,3,0.277416700,0.282636070,0.279185133,0.002857379,0.276922700,0.283216000,0,end_to_end_request
-Adaptive Without Thermal,quick_preview,shared_preparation,S1_nominal,3,0.006563800,0.006774850,0.006540833,0.000220196,0.006260400,0.006798300,0,shared_preparation
-TripMates Lite,research_benchmark,engine_only,S1_nominal,3,5.034092500,5.553811180,5.096802500,0.397177678,4.644757300,5.611557700,0,engine_only
-TripMates Lite,research_benchmark,end_to_end_request,S1_nominal,3,5.040728500,5.565562960,5.105360533,0.399603743,4.651475200,5.623877900,0,end_to_end_request
-TripMates Lite,research_benchmark,shared_preparation,S1_nominal,3,0.006717900,0.011759970,0.008558033,0.002660464,0.006636000,0.012320200,0,shared_preparation
-TripMates Lite,quick_preview,engine_only,S1_nominal,3,0.523009700,0.525791690,0.520445267,0.005947807,0.512225300,0.526100800,0,engine_only
-TripMates Lite,quick_preview,end_to_end_request,S1_nominal,3,0.529608400,0.532621780,0.527619200,0.005357979,0.520292600,0.532956600,0,end_to_end_request
-TripMates Lite,quick_preview,shared_preparation,S1_nominal,3,0.006855800,0.007946150,0.007173933,0.000640366,0.006598700,0.008067300,0,shared_preparation
-Adaptive Without Thermal,quick_preview,end_to_end_request,ALL,3,0.277416700,0.282636070,0.279185133,0.002857379,0.276922700,0.283216000,0,end_to_end_request
-Adaptive Without Thermal,quick_preview,engine_only,ALL,3,0.270662300,0.276053210,0.272644300,0.002834070,0.270618400,0.276652200,0,engine_only
-Adaptive Without Thermal,quick_preview,shared_preparation,ALL,3,0.006563800,0.006774850,0.006540833,0.000220196,0.006260400,0.006798300,0,shared_preparation
-Adaptive Without Thermal,research_benchmark,end_to_end_request,ALL,3,2.084444700,2.095967940,2.086055133,0.008557828,2.076472400,2.097248300,0,end_to_end_request
-Adaptive Without Thermal,research_benchmark,engine_only,ALL,3,2.077669700,2.089535120,2.079468600,0.008655314,2.069882600,2.090853500,0,engine_only
-Adaptive Without Thermal,research_benchmark,shared_preparation,ALL,3,0.006589800,0.006756480,0.006586533,0.000155233,0.006394800,0.006775000,0,shared_preparation
-Greedy Repair,deterministic_no_ga,end_to_end_request,ALL,3,0.007212000,0.007836420,0.007400867,0.000360798,0.007084800,0.007905800,0,end_to_end_request
-Greedy Repair,deterministic_no_ga,engine_only,ALL,3,0.004730400,0.005427900,0.004967700,0.000381083,0.004667300,0.005505400,0,engine_only
-Greedy Repair,deterministic_no_ga,shared_preparation,ALL,3,0.002417500,0.002475190,0.002433167,0.000034952,0.002400400,0.002481600,0,shared_preparation
-TripMates Lite,quick_preview,end_to_end_request,ALL,3,0.529608400,0.532621780,0.527619200,0.005357979,0.520292600,0.532956600,0,end_to_end_request
-TripMates Lite,quick_preview,engine_only,ALL,3,0.523009700,0.525791690,0.520445267,0.005947807,0.512225300,0.526100800,0,engine_only
-TripMates Lite,quick_preview,shared_preparation,ALL,3,0.006855800,0.007946150,0.007173933,0.000640366,0.006598700,0.008067300,0,shared_preparation
-TripMates Lite,research_benchmark,end_to_end_request,ALL,3,5.040728500,5.565562960,5.105360533,0.399603743,4.651475200,5.623877900,0,end_to_end_request
-TripMates Lite,research_benchmark,engine_only,ALL,3,5.034092500,5.553811180,5.096802500,0.397177678,4.644757300,5.611557700,0,engine_only
-TripMates Lite,research_benchmark,shared_preparation,ALL,3,0.006717900,0.011759970,0.008558033,0.002660464,0.006636000,0.012320200,0,shared_preparation
+Greedy Repair,deterministic_no_ga,engine_only,S1_nominal,3,0.002215600,0.002294350,0.002195867,0.000096625,0.002068900,0.002303100,0,engine_only
+Greedy Repair,deterministic_no_ga,end_to_end_request,S1_nominal,3,0.003385800,0.003444300,0.003328333,0.000129970,0.003148400,0.003450800,0,end_to_end_request
+Greedy Repair,deterministic_no_ga,shared_preparation,S1_nominal,3,0.001082700,0.001219950,0.001132467,0.000072655,0.001079500,0.001235200,0,shared_preparation
+Adaptive Without Thermal,research_benchmark,engine_only,S1_nominal,3,0.369702700,0.371076010,0.369137700,0.001978627,0.366481800,0.371228600,0,engine_only
+Adaptive Without Thermal,research_benchmark,end_to_end_request,S1_nominal,3,0.370887800,0.372230330,0.370348100,0.001917326,0.367777000,0.372379500,0,end_to_end_request
+Adaptive Without Thermal,research_benchmark,shared_preparation,S1_nominal,3,0.001185100,0.001284190,0.001210400,0.000061567,0.001150900,0.001295200,0,shared_preparation
+Adaptive Without Thermal,quick_preview,engine_only,S1_nominal,3,0.047671500,0.048543060,0.047672533,0.000789430,0.046706200,0.048639900,0,engine_only
+Adaptive Without Thermal,quick_preview,end_to_end_request,S1_nominal,3,0.048861600,0.049794000,0.048867567,0.000838593,0.047843500,0.049897600,0,end_to_end_request
+Adaptive Without Thermal,quick_preview,shared_preparation,S1_nominal,3,0.001190100,0.001250940,0.001195033,0.000049277,0.001137300,0.001257700,0,shared_preparation
+TripMates Lite,research_benchmark,engine_only,S1_nominal,3,0.785205600,0.791355300,0.783905100,0.007230617,0.774471100,0.792038600,0,engine_only
+TripMates Lite,research_benchmark,end_to_end_request,S1_nominal,3,0.786399900,0.792501090,0.785086433,0.007203895,0.775680400,0.793179000,0,end_to_end_request
+TripMates Lite,research_benchmark,shared_preparation,S1_nominal,3,0.001194300,0.001207800,0.001181333,0.000029585,0.001140400,0.001209300,0,shared_preparation
+TripMates Lite,quick_preview,engine_only,S1_nominal,3,0.088713100,0.089517250,0.088438067,0.001083974,0.086994500,0.089606600,0,engine_only
+TripMates Lite,quick_preview,end_to_end_request,S1_nominal,3,0.089899300,0.090658270,0.089670667,0.000981969,0.088370100,0.090742600,0,end_to_end_request
+TripMates Lite,quick_preview,shared_preparation,S1_nominal,3,0.001186200,0.001356660,0.001232600,0.000103172,0.001136000,0.001375600,0,shared_preparation
+Adaptive Without Thermal,quick_preview,end_to_end_request,ALL,3,0.048861600,0.049794000,0.048867567,0.000838593,0.047843500,0.049897600,0,end_to_end_request
+Adaptive Without Thermal,quick_preview,engine_only,ALL,3,0.047671500,0.048543060,0.047672533,0.000789430,0.046706200,0.048639900,0,engine_only
+Adaptive Without Thermal,quick_preview,shared_preparation,ALL,3,0.001190100,0.001250940,0.001195033,0.000049277,0.001137300,0.001257700,0,shared_preparation
+Adaptive Without Thermal,research_benchmark,end_to_end_request,ALL,3,0.370887800,0.372230330,0.370348100,0.001917326,0.367777000,0.372379500,0,end_to_end_request
+Adaptive Without Thermal,research_benchmark,engine_only,ALL,3,0.369702700,0.371076010,0.369137700,0.001978627,0.366481800,0.371228600,0,engine_only
+Adaptive Without Thermal,research_benchmark,shared_preparation,ALL,3,0.001185100,0.001284190,0.001210400,0.000061567,0.001150900,0.001295200,0,shared_preparation
+Greedy Repair,deterministic_no_ga,end_to_end_request,ALL,3,0.003385800,0.003444300,0.003328333,0.000129970,0.003148400,0.003450800,0,end_to_end_request
+Greedy Repair,deterministic_no_ga,engine_only,ALL,3,0.002215600,0.002294350,0.002195867,0.000096625,0.002068900,0.002303100,0,engine_only
+Greedy Repair,deterministic_no_ga,shared_preparation,ALL,3,0.001082700,0.001219950,0.001132467,0.000072655,0.001079500,0.001235200,0,shared_preparation
+TripMates Lite,quick_preview,end_to_end_request,ALL,3,0.089899300,0.090658270,0.089670667,0.000981969,0.088370100,0.090742600,0,end_to_end_request
+TripMates Lite,quick_preview,engine_only,ALL,3,0.088713100,0.089517250,0.088438067,0.001083974,0.086994500,0.089606600,0,engine_only
+TripMates Lite,quick_preview,shared_preparation,ALL,3,0.001186200,0.001356660,0.001232600,0.000103172,0.001136000,0.001375600,0,shared_preparation
+TripMates Lite,research_benchmark,end_to_end_request,ALL,3,0.786399900,0.792501090,0.785086433,0.007203895,0.775680400,0.793179000,0,end_to_end_request
+TripMates Lite,research_benchmark,engine_only,ALL,3,0.785205600,0.791355300,0.783905100,0.007230617,0.774471100,0.792038600,0,engine_only
+TripMates Lite,research_benchmark,shared_preparation,ALL,3,0.001194300,0.001207800,0.001181333,0.000029585,0.001140400,0.001209300,0,shared_preparation

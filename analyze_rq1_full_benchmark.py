@@ -27,7 +27,9 @@ import pandas as pd
 from scipy.stats import wilcoxon
 
 
-OUTPUT_DIRECTORY = Path("results/rq1_full_benchmark")
+OUTPUT_DIRECTORY = Path(
+    "results/rq1_full_benchmark_corrected_static_rule"
+)
 INPUT_FILE = OUTPUT_DIRECTORY / "rq1_raw_runs.csv"
 PAIRED_TESTS_FILE = (
     OUTPUT_DIRECTORY / "rq1_analysis_paired_tests.csv"

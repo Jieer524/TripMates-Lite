@@ -1374,7 +1374,7 @@ def build_manifest(
         "confirmatory_note": (
             "This study is an exploratory sensitivity analysis. "
             "Confirmatory evidence is the frozen RQ1 benchmark "
-            "(results/rq1_full_benchmark) and the frozen weather "
+            "(results/rq1_full_benchmark_corrected_static_rule) and the frozen weather "
             "ablation (results/weather_ablation). No claim of "
             "superiority may be based on this directory alone."
         ),
@@ -1447,6 +1447,8 @@ def write_study_outputs(
     )
 
     write_json(files["run_config"], manifest)
+    write_json(files["directory"] / "experiment_manifest.json", manifest)
+    summary.to_csv(files["directory"] / "analysis_summary.csv", index=False)
 
     return files
 

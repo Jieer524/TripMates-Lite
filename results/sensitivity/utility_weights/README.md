@@ -1,0 +1,1 @@
+Exploratory utility sensitivity. Conditions perturb one implemented composite-score proxy at a time and renormalisation is represented by the documented multiplier; no source component columns are available in the current dataset.

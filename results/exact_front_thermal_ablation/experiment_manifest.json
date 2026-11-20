@@ -1,0 +1,51 @@
+{
+  "experiment": "predeclared exact-front thermal-selection ablation",
+  "classification": "RQ2 primary exact-selector evidence; GA comparisons are implementation ablations",
+  "alphas": [
+    1.0,
+    0.95,
+    0.9,
+    0.85,
+    0.8
+  ],
+  "primary_guardrail_anchor": "exact thermal-front maximum utility",
+  "visit_guardrail_margin": 1,
+  "candidate_window_limit": 10,
+  "random_restart_count": 5,
+  "instances": [
+    "S1_early",
+    "S1_nominal",
+    "S1_late",
+    "S5_early",
+    "S5_nominal",
+    "S5_late",
+    "S6_early",
+    "S6_nominal",
+    "S6_late"
+  ],
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "generated_utc": "2026-11-13T06:01:34.853388+00:00",
+  "inputs": {
+    "poi": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    }
+  }
+}

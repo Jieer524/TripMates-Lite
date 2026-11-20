@@ -1,0 +1,43 @@
+{
+  "experiment_id": "utility_weight_sensitivity",
+  "classification": "exploratory",
+  "conditions": {
+    "baseline utility weights": 1.0,
+    "rating weight -20%": 0.8,
+    "rating weight +20%": 1.2,
+    "popularity weight -20%": 0.8,
+    "popularity weight +20%": 1.2,
+    "zone-prominence weight -20%": 0.8,
+    "zone-prominence weight +20%": 1.2
+  },
+  "planners": [
+    "Static Utility",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "smoke": false,
+  "run_count": 1260,
+  "utility_formula_version": "implemented composite utility_score; source component columns are not present in the current dataset",
+  "inputs": {
+    "poi": {
+      "file": "poi_data_calculated_final.csv",
+      "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+      "bytes": 29201
+    },
+    "walking_matrix": {
+      "file": "walking_time_matrix_final.csv",
+      "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+      "bytes": 24990
+    }
+  },
+  "runtime": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpu_count": 12,
+    "numpy_version": "1.26.4",
+    "scipy_version": "1.17.1",
+    "pandas_version": "3.0.3"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "experiment": "RQ3 latency benchmark",
   "mode": "smoke_test",
-  "timestamp_utc": "2026-10-10T07:49:40.770118+00:00",
+  "timestamp_utc": "2026-11-11T15:00:10.989211+00:00",
   "planners": [
     "Greedy Repair",
     "Adaptive Without Thermal",
@@ -21,7 +21,7 @@
     "shared_preparation": "simulate_replanning_state + prepare_adaptive_problem only."
   },
   "dataset_loading_policy": "Dataset loading is excluded from both timed scopes and reported separately as dataset_load_seconds.",
-  "dataset_load_seconds": 0.070686,
+  "dataset_load_seconds": 0.034136,
   "settings": {
     "research_benchmark": {
       "population_size": 40,
@@ -62,9 +62,10 @@
   },
   "runtime_metadata": {
     "python_version": "3.11.9",
-    "platform": "Windows-10-10.0.26200-SP0",
+    "platform": "Windows-10-10.0.26300-SP0",
     "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
     "machine": "AMD64",
+    "logical_cpu_count": 12,
     "numpy_version": "1.26.4",
     "scipy_version": "1.17.1",
     "pandas_version": "3.0.3"

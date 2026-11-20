@@ -19,11 +19,12 @@ Protocol
   stochastic planners on identical inputs.  Their seed is the
   seed-matched initial route, not an RNG seed.
 - Stochastic planners use matched seeds 1001-1010.
-- Static planners never adapt after a disruption: they execute the
-  remaining original sequence unchanged and report infeasibility.
+- Static planners use the predeclared skip-and-continue execution rule:
+  they keep the remaining original order, skip optional POIs that become
+  infeasible, and report any mandatory-POI failure explicitly.
 - The frozen research GA configuration is preserved.
 
-Outputs (results/rq1_full_benchmark/):
+Outputs (results/rq1_full_benchmark_corrected_static_rule/):
 - rq1_raw_runs.csv
 - rq1_planner_scenario_summary.csv
 - rq1_overall_planner_summary.csv
@@ -31,8 +32,9 @@ Outputs (results/rq1_full_benchmark/):
 - rq1_run_config.json
 
 Usage:
-    python run_rq1_full_benchmark.py           # full run
-    python run_rq1_full_benchmark.py --smoke    # smoke only
+    python run_rq1_full_benchmark.py           # full corrected run
+    python run_rq1_full_benchmark.py --smoke    # corrected smoke only
+    python run_rq1_full_benchmark.py --legacy-static  # archived legacy rule
 """
 
 from __future__ import annotations
@@ -60,6 +62,7 @@ from benchmark_common import (
     build_scenario_lookup,
     encode_ids,
     evaluate_static_suffix,
+    evaluate_static_suffix_skip_and_continue,
     file_fingerprint,
     load_initial_routes,
     route_utility,
@@ -80,7 +83,12 @@ from stability_metrics import StabilityWeightConfig
 from tripmates_lite_ga import run_tripmates_lite_ga
 
 
-OUTPUT_DIRECTORY = Path("results/rq1_full_benchmark")
+CANONICAL_OUTPUT_DIRECTORY = Path(
+    "results/rq1_full_benchmark_corrected_static_rule"
+)
+LEGACY_OUTPUT_DIRECTORY = Path("results/rq1_full_benchmark")
+
+OUTPUT_DIRECTORY = CANONICAL_OUTPUT_DIRECTORY
 
 RAW_RUNS_FILE = OUTPUT_DIRECTORY / "rq1_raw_runs.csv"
 PLANNER_SCENARIO_FILE = (
@@ -93,6 +101,7 @@ FAILURE_CASES_FILE = (
     OUTPUT_DIRECTORY / "rq1_failure_cases.csv"
 )
 RUN_CONFIG_FILE = OUTPUT_DIRECTORY / "rq1_run_config.json"
+STATIC_EXECUTION_MODE = "planned_skip_and_continue_execution"
 
 
 def isolate_smoke_outputs() -> None:
@@ -150,6 +159,7 @@ def static_planner_record(
     initial_route_utility,
     constraints,
     deterministic,
+    static_execution_mode="planned_skip_and_continue_execution",
 ) -> dict:
     started_at = time.perf_counter()
 
@@ -164,7 +174,10 @@ def static_planner_record(
         state=state,
     )
 
-    evaluation = evaluate_static_suffix(
+    evaluator = (evaluate_static_suffix_skip_and_continue
+                 if static_execution_mode == "planned_skip_and_continue_execution"
+                 else evaluate_static_suffix)
+    evaluation = evaluator(
         data=data,
         state=state,
         scenario_instance=scenario_instance,
@@ -220,6 +233,8 @@ def static_planner_record(
             mandatory_complete=mandatory_complete,
             runtime_seconds=runtime,
             deterministic=deterministic,
+            extra={"static_execution_mode": static_execution_mode,
+                   "skipped_optional_pois": list(evaluation.skipped_pois)},
         )
 
     return build_metric_record(
@@ -245,6 +260,8 @@ def static_planner_record(
         mandatory_complete=False,
         runtime_seconds=runtime,
         deterministic=deterministic,
+        extra={"static_execution_mode": static_execution_mode,
+               "skipped_optional_pois": list(evaluation.skipped_pois)},
     )
 
 
@@ -398,7 +415,7 @@ def ga_planner_record(
         convergence = result.convergence_generation
         evaluated = result.evaluated_chromosome_count
         unique_routes = result.unique_decoded_route_count
-        front_size = None
+        front_size = len(result.first_front)
     else:
         result = run_tripmates_lite_ga(
             data=data,
@@ -677,7 +694,44 @@ def build_overall_planner_summary(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument(
+        "--legacy-static",
+        action="store_true",
+        help=(
+            "Use the archived legacy static replay rule and write to "
+            "results/rq1_full_benchmark/."
+        ),
+    )
+    parser.add_argument(
+        "--corrected-static",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
     args = parser.parse_args()
+
+    if args.legacy_static and args.corrected_static:
+        parser.error(
+            "--legacy-static and --corrected-static cannot be combined."
+        )
+
+    global STATIC_EXECUTION_MODE
+    global OUTPUT_DIRECTORY, RAW_RUNS_FILE, PLANNER_SCENARIO_FILE
+    global OVERALL_PLANNER_FILE, FAILURE_CASES_FILE, RUN_CONFIG_FILE
+    STATIC_EXECUTION_MODE = (
+        "legacy_static_execution"
+        if args.legacy_static
+        else "planned_skip_and_continue_execution"
+    )
+    OUTPUT_DIRECTORY = (
+        LEGACY_OUTPUT_DIRECTORY
+        if args.legacy_static
+        else CANONICAL_OUTPUT_DIRECTORY
+    )
+    RAW_RUNS_FILE = OUTPUT_DIRECTORY / "rq1_raw_runs.csv"
+    PLANNER_SCENARIO_FILE = OUTPUT_DIRECTORY / "rq1_planner_scenario_summary.csv"
+    OVERALL_PLANNER_FILE = OUTPUT_DIRECTORY / "rq1_overall_planner_summary.csv"
+    FAILURE_CASES_FILE = OUTPUT_DIRECTORY / "rq1_failure_cases.csv"
+    RUN_CONFIG_FILE = OUTPUT_DIRECTORY / "rq1_run_config.json"
 
     if args.smoke:
         isolate_smoke_outputs()
@@ -758,6 +812,7 @@ def main() -> None:
                 ),
                 constraints=constraints,
                 deterministic=True,
+                static_execution_mode=STATIC_EXECUTION_MODE,
             )
         )
         completed_units += 1
@@ -787,6 +842,7 @@ def main() -> None:
                     ),
                     constraints=constraints,
                     deterministic=True,
+                    static_execution_mode=STATIC_EXECUTION_MODE,
                 )
             )
             completed_units += 1
@@ -923,12 +979,13 @@ def main() -> None:
         "protocol": {
             "static_distance": (
                 "Deterministic, seed-independent distance-first "
-                "route; executes the remaining original sequence "
-                "unchanged after disruption."
+                "route; uses the configured static execution rule "
+                "after disruption."
             ),
             "static_utility": (
                 "Seed-matched frozen Static Utility GA route; "
-                "executes the remaining original sequence unchanged."
+                "uses the configured static execution rule after "
+                "disruption."
             ),
             "greedy_repair": (
                 "Deterministic given the seed-matched route; no "
@@ -944,6 +1001,7 @@ def main() -> None:
         },
 
         "candidate_window_limit": 10,
+        "static_execution_mode": STATIC_EXECUTION_MODE,
         "ga_configuration": asdict(REPLANNING_GA_CONFIG),
 
         "stability_weights": (

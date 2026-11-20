@@ -7,7 +7,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "output" / "research_final"
 SOURCES = [
-    ROOT / "results" / "rq1_full_benchmark" / "rq1_raw_runs.csv",
+    ROOT / "results" / "rq1_full_benchmark_corrected_static_rule" / "rq1_raw_runs.csv",
     ROOT / "results" / "weather_ablation" / "weather_ablation_raw_90_pairs.csv",
 ]
 

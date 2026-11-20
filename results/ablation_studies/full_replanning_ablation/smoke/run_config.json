@@ -5,7 +5,7 @@
   "result_class": "exploratory_sensitivity",
   "confirmatory": false,
   "confirmatory_note": "This study is an exploratory sensitivity analysis. Confirmatory evidence is the frozen RQ1 benchmark (results/rq1_full_benchmark) and the frozen weather ablation (results/weather_ablation). No claim of superiority may be based on this directory alone.",
-  "timestamp_utc": "2026-11-04T07:19:04.667516+00:00",
+  "timestamp_utc": "2026-11-11T09:46:28.293499+00:00",
   "seeds": [
     1001
   ],
@@ -28,11 +28,11 @@
       }
     ],
     "identical_inputs": true,
-    "study_started_utc": "2026-11-04T07:19:04.667516+00:00"
+    "study_started_utc": "2026-11-11T09:46:28.292498+00:00"
   },
   "run_count": 7,
   "failure_count": 0,
-  "total_runtime_seconds": 5.729,
+  "total_runtime_seconds": 5.096,
   "candidate_window_limit": 10,
   "ga_configuration": {
     "population_size": 40,
@@ -74,6 +74,7 @@
     "platform": "Windows-10-10.0.26300-SP0",
     "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
     "machine": "AMD64",
+    "logical_cpu_count": 12,
     "numpy_version": "1.26.4",
     "scipy_version": "1.17.1",
     "pandas_version": "3.0.3"

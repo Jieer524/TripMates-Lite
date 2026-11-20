@@ -1,7 +1,7 @@
 {
   "experiment": "RQ1 full 18-instance benchmark",
   "mode": "smoke_test",
-  "timestamp_utc": "2026-11-04T07:12:38.195501+00:00",
+  "timestamp_utc": "2026-11-20T08:46:11.246633+00:00",
   "planners": [
     "Static Distance",
     "Static Utility",
@@ -17,13 +17,14 @@
     1001
   ],
   "protocol": {
-    "static_distance": "Deterministic, seed-independent distance-first route; executes the remaining original sequence unchanged after disruption.",
-    "static_utility": "Seed-matched frozen Static Utility GA route; executes the remaining original sequence unchanged.",
+    "static_distance": "Deterministic, seed-independent distance-first route; uses the configured static execution rule after disruption.",
+    "static_utility": "Seed-matched frozen Static Utility GA route; uses the configured static execution rule after disruption.",
     "greedy_repair": "Deterministic given the seed-matched route; no WES, thermal or GA input.",
     "adaptive_without_thermal": "Stochastic GA repair, matched seeds.",
     "tripmates_lite": "Stochastic thermal-aware GA repair, matched seeds, frozen selection policy."
   },
   "candidate_window_limit": 10,
+  "static_execution_mode": "legacy_static_execution",
   "ga_configuration": {
     "population_size": 40,
     "maximum_generations": 60,
@@ -59,12 +60,13 @@
   "seed_interpretation": "Seeds are repeated stochastic optimisation runs for stability and paired comparison, not independent real-world disruptions. Static Utility and Greedy Repair use the seed only to select the seed-matched initial route.",
   "run_count": 5,
   "failure_count": 0,
-  "total_runtime_seconds": 3.176,
+  "total_runtime_seconds": 3.788,
   "runtime_metadata": {
     "python_version": "3.11.9",
     "platform": "Windows-10-10.0.26300-SP0",
     "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
     "machine": "AMD64",
+    "logical_cpu_count": 12,
     "numpy_version": "1.26.4",
     "scipy_version": "1.17.1",
     "pandas_version": "3.0.3"
