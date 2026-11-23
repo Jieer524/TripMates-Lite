@@ -68,16 +68,21 @@ tools/
 # -----------------------------------------------------------------------------
 # Regenerable research outputs
 # -----------------------------------------------------------------------------
-# Keep curated full-run summaries and manifests available for versioning, but
-# do not add smoke-test folders or large raw measurement files by accident.
+# Keep smoke runs out of the public evidence package. Full-run raw files are
+# ignored by default and explicitly allowed below when they support the paper.
 results/**/smoke/
 results/**/raw_runs.csv
 results/**/rq1_raw_runs.csv
+# Primary and recorded baseline-sensitivity comparisons.
 !results/rq1_full_benchmark_minimum_deletion_primary/rq1_raw_runs.csv
 !results/rq1_full_benchmark_corrected_static_rule/rq1_raw_runs.csv
+# Full-run ablations and sensitivity analyses cited by the manuscript.
 !results/ablation_studies/candidate_window_sensitivity/raw_runs.csv
+!results/ablation_studies/disruption_severity_sensitivity/raw_runs.csv
+!results/ablation_studies/itinerary_density_sensitivity/raw_runs.csv
 !results/ablation_studies/stability_ablation/raw_runs.csv
 !results/ablation_studies/full_replanning_ablation/raw_runs.csv
+!results/ablation_studies/weather_profile_sensitivity/raw_runs.csv
 results/**/latency_raw_measurements.csv
 results/**/weather_ablation_raw_*.csv
 
