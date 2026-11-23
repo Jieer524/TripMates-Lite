@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from datetime import time
 from html import escape
+import os
 from pathlib import Path
 
 from ga_core import GAConfig
@@ -12,8 +13,8 @@ from ga_core import GAConfig
 ROOT = Path(__file__).resolve().parent
 POI_FILE = ROOT / "poi_data_calculated_final.csv"
 MATRIX_FILE = ROOT / "walking_time_matrix_final.csv"
-HISTORY_FILE = ROOT / "data" / "itinerary_history.sqlite3"
-WEATHER_CACHE_FILE = ROOT / "data" / "weather_profile.json"
+HISTORY_FILE = Path(os.environ.get("TRIPMATES_HISTORY_FILE", ROOT / "data" / "itinerary_history.sqlite3"))
+WEATHER_CACHE_FILE = Path(os.environ.get("TRIPMATES_WEATHER_CACHE_FILE", ROOT / "data" / "weather_profile.json"))
 KUALA_LUMPUR = {"latitude": 3.1390, "longitude": 101.6869}
 HOT_WEATHER_CATEGORIES = frozenset({"hot", "hot_humid"})
 

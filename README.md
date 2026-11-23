@@ -6,6 +6,26 @@ A research prototype for single-day walking-itinerary planning with post-disrupt
 
 ## Controlled gap studies
 
+### Literature-derived repair comparator
+
+`run_ils_external_comparison.py` adds a **single-route adaptation** of the
+adjustment iterated local search family described by Hapsari et al. (2019),
+DOI `10.1007/s40092-019-0315-9`. It is not a reproduction of their original
+multi-route TOPTW algorithm. This comparator keeps the realised prefix and
+uses the same 10-POI candidate window, feasibility decoder, mandatory checks,
+18 disruption instances, initial routes, and 10 seeds as the adaptive planners.
+It uses feasible insertion, exchange/reversal, and seeded shaking for 20
+iterations. The five planners listed below remain the original controlled
+comparison; this is an additional method-family comparison.
+
+Run `python run_ils_external_comparison.py` and then
+`python analyze_ils_external_comparison.py`. The 180 new raw rows, 918-row
+combined table, summaries, configuration, and descriptive matched-pair
+analysis are in `results/rq1_ils_external_comparison/`. The 180 seed pairs
+are computational repeats; the six disruption families remain the design
+interpretation units. Runtime fields come from separate recording batches
+and are not used for a paired speed claim.
+
 The additional studies are exploratory and isolated under `results/ablation_studies/`:
 
 | Study | Levels | Full-run cells |
@@ -202,7 +222,7 @@ The score is deterministic: every component is an integer count, ordering follow
 
 - **Under the frozen policy (alpha = 0.90) the thermal objective never changes the selected route.** All 90 paired ablation runs show a WES difference of exactly zero, and across 180 RQ1 runs TripMates and Adaptive produce identical utility, walking time and WES (the guardrail falls back to the non-thermal reference every time).
 - **A trade-off appears only when utility retention is relaxed.** In the C2 sensitivity run, alpha = 0.85 reduces WES by **35.2 min on average** (median 53.1, effect size +1.00, Holm-adjusted p ~ 1.7e-14) at the cost of utility and visit count; alpha = 1.00 is actually 14.1 min worse.
-- **Adaptive replanning improves recovery quality.** Under the predeclared skip-and-continue static rule, both static baselines remain feasible, but Adaptive Without Thermal and TripMates Lite achieve higher itinerary completion and utility in the matched benchmark.
+- **Adaptive replanning has a narrow completion benefit against the stronger fixed-order comparator.** In the minimum-deletion primary comparison, Static Utility reaches mean ICR 0.9375 and both adaptive planners reach 0.9583. The difference is concentrated in the S3 closure family; the original skip-and-continue run remains a protocol-sensitivity comparison.
 - **The cost is latency.** Greedy ~3 ms, Adaptive ~0.5–1.7 s, TripMates ~3.5 s (S1_early, 30 repetitions).
 
 ---
@@ -313,6 +333,7 @@ streamlit run app.py
 - After planning: a pydeck map with a slider that reveals the route stop by stop, a two-column timeline, and metric cards. After replanning, the completed/committed portion and revised unfinished portion are labelled separately.
 - Choose `Quick preview` (12x12, seconds) or `Research benchmark` (80x120 / 40x60, tens of seconds).
 - Trips can be named and saved to `data/itinerary_history.sqlite3`, then reopened or deleted under "Saved itineraries".
+- The observed local create → replan → save → reopen browser workflow is documented in `results/web_e2e_evaluation/functional_report.md`. Set `TRIPMATES_HISTORY_FILE` and `TRIPMATES_WEATHER_CACHE_FILE` to disposable paths when evaluating the UI without touching existing local records.
 
 ---
 
@@ -382,4 +403,4 @@ python test_smoke_output_isolation.py    # smoke must not overwrite official res
 
 Candidate-window sensitivity is available with `python run_candidate_window_sensitivity.py --smoke`; levels 5, 10, 15, and all eligible candidates are written to `results/ablation_studies/candidate_window_sensitivity/`. The modification limit remains independently fixed at 10, so 10 remains the proposed configuration and 15/all-eligible are exploratory search-space conditions. Utility-weight sensitivity is available with `python run_utility_weight_sensitivity.py --smoke` and writes to `results/sensitivity/utility_weights/`. These studies test search-space access and robustness to researcher-assigned utility assumptions; neither replaces the confirmatory benchmark or licenses retroactive tuning.
 
-Full official sensitivity outputs are now available in the corresponding result directories. The planned skip-and-continue static execution rule is the canonical RQ1 protocol. The archived legacy replay results remain available under `results/rq1_full_benchmark/` for comparison. Evidence appendices are under `output/research_final/`.
+Full official sensitivity outputs are available in the corresponding result directories. `run_rq1_full_benchmark.py` records the originally planned skip-and-continue static protocol in `results/rq1_full_benchmark_corrected_static_rule/`. `python run_minimal_static_analysis.py` generates the stronger fixed-order static rows; `python assemble_rq1_minimum_deletion_primary.py` combines those 198 rows with the 540 unchanged Greedy Repair and adaptive rows in `results/rq1_full_benchmark_minimum_deletion_primary/`. Its configuration records both source files and identifies the output as an assembled reanalysis. The archived legacy replay results remain under `results/rq1_full_benchmark/`. Evidence appendices are under `output/research_final/`.

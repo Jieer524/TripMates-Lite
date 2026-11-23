@@ -1,0 +1,103 @@
+{
+  "experiment": "RQ1 minimum-deletion primary comparison",
+  "mode": "assembled_reanalysis",
+  "assembled_utc": "2026-11-22T15:51:22.759764+00:00",
+  "source_artifacts": {
+    "minimum_deletion_static_rows": {
+      "path": "results/rq1_minimal_edit_static/minimal_static_utility_raw_runs.csv",
+      "sha256": "7a94c92dba4da78e376cc1f5c16a71fcf4270607596356f6eb15c6b32b35a564",
+      "bytes": 181628
+    },
+    "recorded_nonstatic_rows": {
+      "path": "results/rq1_full_benchmark_corrected_static_rule/rq1_raw_runs.csv",
+      "sha256": "bfe7f36716ddcd6f4fc8b17886d648abb23293304c6242264c7c6ed74184fb98",
+      "bytes": 864796
+    },
+    "recorded_run_config": {
+      "path": "results/rq1_full_benchmark_corrected_static_rule/rq1_run_config.json",
+      "sha256": "3db08a5c021aa0bfca25449445630b0b3542005d4dcddccd070f14bed641b221",
+      "bytes": 3138
+    }
+  },
+  "composition": {
+    "minimum_deletion_static_rows": 198,
+    "unchanged_greedy_and_adaptive_rows": 540,
+    "total_rows": 738
+  },
+  "static_execution_mode": "minimum_deletion_fixed_order_execution",
+  "static_rule": "Keep the maximum number of original unfinished POIs in a feasible order-preserving subsequence; break ties by utility, travel time, then POI ID. No reordering or substitution.",
+  "sensitivity_comparison": "results/rq1_full_benchmark_corrected_static_rule",
+  "planners": [
+    "Static Distance",
+    "Static Utility",
+    "Greedy Repair",
+    "Adaptive Without Thermal",
+    "TripMates Lite"
+  ],
+  "instance_ids": [
+    "S1_early",
+    "S1_nominal",
+    "S1_late",
+    "S2_early",
+    "S2_nominal",
+    "S2_late",
+    "S3_early",
+    "S3_nominal",
+    "S3_late",
+    "S4_early",
+    "S4_nominal",
+    "S4_late",
+    "S5_early",
+    "S5_nominal",
+    "S5_late",
+    "S6_early",
+    "S6_nominal",
+    "S6_late"
+  ],
+  "seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "candidate_window_limit": 10,
+  "ga_configuration": {
+    "population_size": 40,
+    "maximum_generations": 60,
+    "tournament_size": 3,
+    "crossover_probability": 0.9,
+    "mutation_probability": 0.2,
+    "elitism_count": 2,
+    "stagnation_limit": 15
+  },
+  "stability_weights": {
+    "removed_poi_weight": 1.0,
+    "inserted_poi_weight": 1.0,
+    "order_change_weight": 0.5,
+    "time_shift_weight": 0.25,
+    "locked_prefix_violation_weight": 1000.0
+  },
+  "dataset": {
+    "file": "poi_data_calculated_final.csv",
+    "sha256": "4b9b9f49a8f291f5a8f29cb3bd95b77659037dde58b1f165e44316e52ccde60b",
+    "bytes": 29201
+  },
+  "matrix": {
+    "file": "walking_time_matrix_final.csv",
+    "sha256": "63266c23a3142a42054c8aec594b619678ef810f4c74339108471040a161fc6f",
+    "bytes": 24990
+  },
+  "initial_routes": {
+    "file": "initial_routes_by_seed.json",
+    "sha256": "736d362798a1b6bc74ae5ad7f6c6735cab52ea2a33be4dc6e9688e6d0655d826",
+    "bytes": 873
+  },
+  "seed_interpretation": "Seeds are repeated stochastic optimisation runs for stability and paired comparison, not independent real-world disruptions. Static Utility and Greedy Repair use the seed only to select the seed-matched initial route.",
+  "failure_count": 0
+}

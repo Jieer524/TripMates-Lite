@@ -1,0 +1,91 @@
+{
+  "comparison": "Adapted single-route ILS family versus Adaptive Without Thermal",
+  "test": "two-sided Wilcoxon signed-rank; descriptive for matched computational repeats",
+  "interpretation_unit": "six disruption families; instance rows are early/nominal/late stress variants",
+  "overall": [
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "itinerary_completion_ratio",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 50,
+      "median_advantage": 0.0,
+      "mean_advantage": 0.034722222222222224,
+      "wilcoxon_statistic": 0.0,
+      "two_sided_p_value": 1.5374597944280347e-12,
+      "rank_biserial_effect": 1.0,
+      "test_status": "computed"
+    },
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "original_poi_retention",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 176,
+      "median_advantage": 0.125,
+      "mean_advantage": 0.15,
+      "wilcoxon_statistic": 786.0,
+      "two_sided_p_value": 1.0243565965191944e-27,
+      "rank_biserial_effect": 0.899075500770416,
+      "test_status": "computed"
+    },
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "achieved_utility",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 179,
+      "median_advantage": -1.385710000000003,
+      "mean_advantage": 0.45212486111110906,
+      "wilcoxon_statistic": 7725.0,
+      "two_sided_p_value": 0.6272553089790069,
+      "rank_biserial_effect": -0.040968342644320296,
+      "test_status": "computed"
+    },
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "total_travel_min",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 179,
+      "median_advantage": 3.373948999999996,
+      "mean_advantage": 8.77962122777777,
+      "wilcoxon_statistic": 0.0,
+      "two_sided_p_value": 1.65877303025749e-31,
+      "rank_biserial_effect": 1.0,
+      "test_status": "computed"
+    },
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "wes",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 179,
+      "median_advantage": 4.223413999999991,
+      "mean_advantage": 22.96788971111111,
+      "wilcoxon_statistic": 100.0,
+      "two_sided_p_value": 1.6065375452044626e-30,
+      "rank_biserial_effect": 0.9875853507138423,
+      "test_status": "computed"
+    },
+    {
+      "scope": "overall_pairs",
+      "instance_id": "ALL",
+      "metric": "edit_distance_score",
+      "advantage_interpretation": "positive favours Adaptive Without Thermal",
+      "pair_count": 180,
+      "nonzero_pair_count": 179,
+      "median_advantage": 2.75,
+      "mean_advantage": 1.676388888888889,
+      "wilcoxon_statistic": 2032.5,
+      "two_sided_p_value": 1.2433435040876352e-18,
+      "rank_biserial_effect": 0.7476722532588455,
+      "test_status": "computed"
+    }
+  ]
+}
