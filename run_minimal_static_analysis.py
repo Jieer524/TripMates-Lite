@@ -75,6 +75,10 @@ def main():
                 initial_route_utility=initial_utils[seed], constraints=constraints,
                 deterministic=True, static_execution_mode="planned_skip_and_continue_execution"))
     df=pd.DataFrame(rows)
+    # static_planner_record dispatches through the skip-and-continue mode while
+    # the evaluator above is temporarily replaced. Record the rule actually
+    # used so downstream comparisons cannot confuse the two static protocols.
+    df["static_execution_mode"] = "minimum_deletion_fixed_order_execution"
     out=Path("results/rq1_minimal_edit_static")
     out.mkdir(parents=True, exist_ok=True)
     df.to_csv(out/"minimal_static_utility_raw_runs.csv", index=False)
