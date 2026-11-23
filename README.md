@@ -6,6 +6,26 @@ A research prototype for single-day walking-itinerary planning with post-disrupt
 
 ## Controlled gap studies
 
+### Literature-derived repair comparator
+
+`run_ils_external_comparison.py` adds a **single-route adaptation** of the
+adjustment iterated local search family described by Hapsari et al. (2019),
+DOI `10.1007/s40092-019-0315-9`. It is not a reproduction of their original
+multi-route TOPTW algorithm. This comparator keeps the realised prefix and
+uses the same 10-POI candidate window, feasibility decoder, mandatory checks,
+18 disruption instances, initial routes, and 10 seeds as the adaptive planners.
+It uses feasible insertion, exchange/reversal, and seeded shaking for 20
+iterations. The five planners listed below remain the original controlled
+comparison; this is an additional method-family comparison.
+
+Run `python run_ils_external_comparison.py` and then
+`python analyze_ils_external_comparison.py`. The 180 new raw rows, 918-row
+combined table, summaries, configuration, and descriptive matched-pair
+analysis are in `results/rq1_ils_external_comparison/`. The 180 seed pairs
+are computational repeats; the six disruption families remain the design
+interpretation units. Runtime fields come from separate recording batches
+and are not used for a paired speed claim.
+
 The additional studies are exploratory and isolated under `results/ablation_studies/`:
 
 | Study | Levels | Full-run cells |
