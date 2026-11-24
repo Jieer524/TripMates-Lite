@@ -1,6 +1,6 @@
 # TripMates Lite
 
-A research prototype for single-day walking-itinerary planning with post-disruption replanning in Kuala Lumpur. The core question: **if weather-weighted outdoor exposure (WES) is added as a fourth Pareto objective to replanning, can outdoor exposure be reduced without materially sacrificing itinerary quality?**
+A research prototype for single-day walking-itinerary planning with post-disruption replanning in Kuala Lumpur. The study evaluates executable completion and original-POI retention under bounded suffix repair, the effect of a weather-exposure selection rule, and replanning latency. Its frozen thermal policy uses a utility guardrail of `alpha = 0.90`.
 
 > Full documentation — data contracts, module-by-module walkthrough, every experiment, result interpretation, known issues — is in **[REPO_GUIDE.md](REPO_GUIDE.md)**.
 
@@ -53,7 +53,7 @@ python final_research_audit.py --allow-missing-official
 python build_final_research_tables.py
 ```
 
-`final_research_audit.py` writes `output/research_final/reproducibility_audit.json` and exits non-zero for critical schema/configuration problems unless `--allow-missing-official` is used. `build_final_research_tables.py` writes derived tables and focused figures to `output/research_final/`. Smoke artefacts are not official evidence; full official runs must be completed before final thesis claims.
+`final_research_audit.py` writes `output/research_final/reproducibility_audit.json` and exits non-zero for critical schema/configuration problems unless `--allow-missing-official` is used. `build_final_research_tables.py` writes derived tables and focused figures to `output/research_final/`. Smoke artefacts are not official evidence; the archived full-run records support the reported results.
 
 ---
 
@@ -76,13 +76,13 @@ Each scenario x `early / nominal / late` trigger = **18 instances**.
 
 | Planner | Adaptive | Stochastic | Uses thermal info | One-line summary |
 |---|---|---|---|---|
-| Static Distance | no | no | no | nearest-neighbour greedy, replays the plan after disruption |
-| Static Utility | no | yes | no | 80x120 GA for the initial route, no adaptation afterwards |
+| Static Distance | no | no | no | nearest-neighbour initial route; minimum-deletion fixed-order execution after disruption |
+| Static Utility | no | yes | no | 80x120 GA initial route; minimum-deletion fixed-order execution after disruption |
 | Greedy Repair | yes | no | no | greedy repair by utility per minute |
 | Adaptive Without Thermal | yes | yes | no | bounded GA, 3 objectives |
 | **TripMates Lite** | yes | yes | yes | bounded GA, **4 objectives (+WES)** with guardrailed selection |
 
-All adaptive planners share **the same decoder** and **the same candidate window**. Differences are confined to the objective function and the final route selection — the precondition for a fair ablation.
+Greedy Repair and the two GA planners use the shared decoder and 10-POI candidate window but differ in search procedure. The two GA planners share the same search settings; their matched comparison isolates the thermal route-selection rule. The separate single-route AILS adaptation uses the same repair contract.
 
 ---
 
@@ -128,30 +128,22 @@ Original itinerary (seed 1001, S1 nominal):
 
 Disruption: Heavy Rain at 11:00 (trigger = 660 min)
 
-Locked prefix (completed before trigger):
-  [1, 2]
+Recorded completed prefix: [1, 2]
+Current activity at trigger: visit (POI 12 in progress)
+Original remaining route: [12, 4, 33, 34, 36, 13]
 
-Current activity at trigger:
-  visit (POI 12 is in progress, completed and locked)
+Recorded repaired route: [12, 4, 33, 34, 36, 13]
+Final itinerary: [1, 2, 12, 4, 33, 34, 36, 13]
 
-Candidate repair window (max 10, mandatory first):
-  mandatory: [4, 13]
-  optional:  [36, 12, 33, 34, 18, ...]  (top-scored, feasibility-gated)
-
-Final itinerary:
-  locked: [1, 2, 12]
-  repaired suffix: [34, 4, 33, 36, 13]
-
-RepairRecord:
-  locked_prefix:              (1, 2, 12)
+Recorded repair fields:
+  locked_prefix:              [1, 2]
   current_activity:           visit
-  modified_suffix:            (34, 4, 33, 36, 13)
-  retained_activities:        (4, 33, 36, 13)
-  removed_activities:         ()  — no original suffix POI was dropped
-  replacements:               (34,)  — re-inserted from candidate window
-  failure_status:             success
+  modified_suffix:            [12, 4, 33, 34, 36, 13]
+  removed_pois:               []
+  replacement_pois:           []
+  repair_failure_status:      success
   bounded_repair_limit:       10
-  actual_modification_count:  5
+  actual_modification_count:  6
 ```
 
 ---
@@ -220,10 +212,10 @@ The score is deterministic: every component is an integer count, ordering follow
 
 ## Key results (TL;DR)
 
-- **Under the frozen policy (alpha = 0.90) the thermal objective never changes the selected route.** All 90 paired ablation runs show a WES difference of exactly zero, and across 180 RQ1 runs TripMates and Adaptive produce identical utility, walking time and WES (the guardrail falls back to the non-thermal reference every time).
-- **A trade-off appears only when utility retention is relaxed.** In the C2 sensitivity run, alpha = 0.85 reduces WES by **35.2 min on average** (median 53.1, effect size +1.00, Holm-adjusted p ~ 1.7e-14) at the cost of utility and visit count; alpha = 1.00 is actually 14.1 min worse.
-- **Adaptive replanning has a narrow completion benefit against the stronger fixed-order comparator.** In the minimum-deletion primary comparison, Static Utility reaches mean ICR 0.9375 and both adaptive planners reach 0.9583. The difference is concentrated in the S3 closure family; the original skip-and-continue run remains a protocol-sensitivity comparison.
-- **The cost is latency.** Greedy ~3 ms, Adaptive ~0.5–1.7 s, TripMates ~3.5 s (S1_early, 30 repetitions).
+- **The frozen thermal policy (`alpha = 0.90`) did not change route selection.** TripMates Lite and Adaptive Without Thermal selected identical routes in all 90 weather-related matched pairs and have identical aggregate utility, travel time, and WES in the 180-run primary comparison.
+- **Relaxing the finite-front guardrail exposed a trade-off.** At `alpha = 0.85` and `0.80`, median WES reduction was 14.01%, below the prespecified 15% target; median utility loss was 11.18% and 12.41%, above the 10% limit. The one-visit loss limit was met. This finite-front analysis uses a front-maximum utility anchor, whereas the primary GA policy uses the seed-matched non-thermal route as its anchor.
+- **Bounded adaptive repair had a narrow completion benefit.** In the minimum-deletion primary comparison, Static Utility reached mean ICR 0.9375 and both adaptive planners reached 0.9583. The entire 0.0208 difference came from S3 attraction closure. Static Utility retained more original POIs overall (OPR 0.9375 versus 0.9056). The skip-and-continue result is a baseline-sensitivity condition.
+- **Latency depends on search configuration.** The dedicated research benchmark measured medians of 361.710 ms for Adaptive Without Thermal and 714.746 ms for TripMates Lite; their P95 values exceeded 2,000 ms. Within the tested 10-POI window, finite-domain enumeration matched the GA-selected routes in 90/90 comparisons and had lower paired median runtime (37.996 versus 876.510 ms).
 
 ---
 
@@ -242,15 +234,20 @@ python static_utility_baseline.py        # required first: produces the 10 initi
 python static_distance_baseline.py
 python run_weather_ablation_all_seeds.py # main ablation: 90 pairs
 python analyze_weather_ablation.py
-python run_rq1_full_benchmark.py         # RQ1: 738 runs (slow)
+python run_rq1_full_benchmark.py         # recorded skip-and-continue RQ1 protocol
 python analyze_rq1_full_benchmark.py
+python run_minimal_static_analysis.py    # stronger fixed-order static rows
+python assemble_rq1_minimum_deletion_primary.py  # 738-row primary comparison
+python run_ils_external_comparison.py    # 180 additional matched rows
+python analyze_ils_external_comparison.py
 python run_thermal_tradeoff_sensitivity.py
 python analyze_thermal_tradeoff_sensitivity.py
+python run_exact_front_thermal_ablation.py
 python run_latency_benchmark.py
 python audit_checks.py
 ```
 
-Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke/`** so official results are never overwritten.
+Where a runner offers `--smoke`, its smoke output goes to a separate `smoke/` directory and is not used as official evidence. Some scripts, including the minimum-deletion assembly and finite-domain front experiment, have no smoke mode and write to their documented result directories when run.
 
 ---
 
@@ -292,8 +289,11 @@ Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke
 | `static_utility_baseline.py` | 10 seeds x 80x120 GA, frozen initial routes | 10 | `results/static_utility/` |
 | `static_distance_baseline.py` | nearest neighbour + mandatory-feasibility gate | 1 | `static_distance_normal_*` |
 | `run_weather_ablation_all_seeds.py` | S1/S5/S6 x 3 triggers x 10 seeds, paired planners | 90 pairs | `results/weather_ablation/` |
-| `run_rq1_full_benchmark.py` | 5 planners x 18 instances | 738 runs | `results/rq1_full_benchmark_corrected_static_rule/` |
-| `run_thermal_tradeoff_sensitivity.py` | 9 instances x 10 seeds x 4 alphas | 360 runs | `results/thermal_tradeoff_sensitivity_alpha_independent_v2/` |
+| `run_rq1_full_benchmark.py` | 5 planners x 18 instances; recorded skip-and-continue static protocol | 738 runs | `results/rq1_full_benchmark_corrected_static_rule/` |
+| `run_minimal_static_analysis.py` and `assemble_rq1_minimum_deletion_primary.py` | Minimum-deletion fixed-order static rows combined with unchanged Greedy Repair and adaptive rows | 738 primary rows | `results/rq1_full_benchmark_minimum_deletion_primary/` |
+| `run_ils_external_comparison.py` | Additional single-route AILS adaptation under the shared repair contract | 180 new rows; 918 combined | `results/rq1_ils_external_comparison/` |
+| `run_exact_front_thermal_ablation.py` | Finite-domain thermal selection over 9 weather-related instances, 10 seeds and 5 alpha values | 90 matched pairs per alpha | `results/exact_front_thermal_ablation/` |
+| `run_thermal_tradeoff_sensitivity.py` | Separate exploratory GA sensitivity over 9 instances, 10 seeds and 4 alphas | 360 runs | `results/thermal_tradeoff_sensitivity_alpha_independent_v2/` |
 | `run_latency_benchmark.py` | 1 warm-up + 30 timed repetitions, 3 scopes | 3 planners x 18 | `results/latency_benchmark/` |
 | `audit_checks.py` | 12 dataset checks (schema / formula / matrix / hashes) | — | `dataset_validation_report.json` |
 | `diagnose_thermal_diversity.py` | why the thermal objective never changes the route (2000 sampled chromosomes) | — | console |
@@ -302,17 +302,18 @@ Every runner supports `--smoke`, and **smoke output goes to `results/<exp>/smoke
 
 ## Results summary
 
-**RQ1 full benchmark** (`results/rq1_full_benchmark_corrected_static_rule/rq1_overall_planner_summary.csv`)
+**Primary minimum-deletion comparison and additional AILS adaptation** (`results/rq1_ils_external_comparison/rq1_with_ils_overall_summary.csv`). The five original planner conditions contribute 738 rows; the additional AILS adaptation contributes 180 rows. Static Distance has one deterministic run per disruption variant, while the other planners have 10 seed-matched runs per variant.
 
-| Planner | Feasible | Mean utility | Mean walking min | Mean WES | Median runtime |
-|---|---|---|---|---|---|
-| Static Distance | 100.0% | 44.17 | 62.00 | 251.46 | 0.4 ms |
-| Static Utility | 100.0% | 54.44 | 66.28 | 285.86 | 0.4 ms |
-| Greedy Repair | 100% | 59.42 | 100.06 | 353.38 | 11.6 ms |
-| Adaptive Without Thermal | 100% | 63.88 | 68.87 | 310.50 | 1.78 s |
-| TripMates Lite | 100% | 63.88 | 68.87 | 310.50 | 3.09 s |
+| Planner | Runs | Mean ICR | Mean OPR | Mean utility | Mean travel (min) | Mean cost (RM) |
+|---|---:|---:|---:|---:|---:|---:|
+| Static Distance | 18 | 0.9167 | 0.9167 | 45.638 | 62.046 | 117.500 |
+| Static Utility (minimum-deletion) | 180 | 0.9375 | 0.9375 | 62.755 | 69.869 | 135.417 |
+| Greedy Repair | 180 | 0.8958 | 0.8500 | 59.421 | 100.058 | 135.833 |
+| Adaptive Without Thermal | 180 | 0.9583 | 0.9056 | 63.878 | 68.868 | 128.889 |
+| TripMates Lite | 180 | 0.9583 | 0.9056 | 63.878 | 68.868 | 128.889 |
+| Single-route AILS adaptation | 180 | 0.9236 | 0.7556 | 63.425 | 77.647 | 140.833 |
 
-**C2 alpha sensitivity** (WES advantage, positive = TripMates better)
+**Separate exploratory GA alpha sensitivity** (`results/thermal_tradeoff_sensitivity_alpha_independent_v2/`; WES advantage in weighted minutes, positive = TripMates Lite better). This is a different analysis from the finite-domain, percentage-change results above.
 
 | alpha | WES advantage | Effect size | Adjusted p |
 |---|---|---|---|
@@ -340,7 +341,7 @@ streamlit run app.py
 ## Data and formulas
 
 - **Utility** `U1 = (2*rating + 10*log10(n+1)/log10(max_n+1) + zone_score) / 3`, with `zone_score = A:10 / B:8 / C:6`.
-- **Walking time** = equirectangular straight-line distance / 1.4 m/s / 60 (**no street network**; a lower-bound proxy). The repository checks matrix shape, symmetry, finite positive connections and route-level connectivity; it does **not** implement physical accessibility features such as wheelchair access, step-free routing, stairs, lifts, slopes or barrier-aware pedestrian navigation.
+- **Walking time** = equirectangular straight-line distance / 1.4 m/s / 60 (**no street network**; a controlled movement proxy). The repository checks matrix shape, symmetry, finite positive connections and route-level connectivity; it does **not** implement physical accessibility features such as wheelchair access, step-free routing, stairs, lifts, slopes or barrier-aware pedestrian navigation.
 - **Thermal-exposure proxy (WES):** for POI `j`, `indoor_ratio_j` is the whole-visit indoor proportion and `shelter_ratio_j` is the conditional proportion of the remaining outdoor visit fraction that is sheltered or shaded. The exposed fraction is `X_j = (1 - indoor_ratio_j)(1 - shelter_ratio_j)`. Walking exposure is walking minutes; visit exposure is `visit_minutes × X_j`. Waiting is explicitly excluded by default (and remains available as a separate optional metric), rather than being silently treated as outdoor exposure. For any activity interval, `weighted = pre_trigger_minutes + M_s × post_trigger_minutes`, so `WES = pre_trigger_exposure + M_s × post_trigger_exposure`. This is a planning proxy based on researcher-assigned itinerary metadata, not a medically validated, physiological, or health-risk model.
 - Weather provenance is recorded as `live`, `cached`, `predefined`, or `unavailable`, with a fallback reason. Temperature and, when present, relative humidity can classify a profile as hot; missing values use the deterministic predefined benchmark profile or explicit unavailable neutral mode, never zero exposure. `exposure_core.py` also exposes total, high-heat, maximum-continuous, travel, visit, and optional waiting exposure metrics.
 - All data is verified by `audit_checks.py`; see `dataset_validation_report.json`.
@@ -349,9 +350,9 @@ streamlit run app.py
 
 ## Known limitations
 
-1. **The thermal objective has no effect under the frozen policy** (a finding, not a defect); the candidate window is capped at 10 and prioritises mandatory POIs, leaving the front almost no slack.
-2. **The 10 "seeds" are repeated stochastic optimisations, not 10 real disruptions**; the instance is the primary statistical unit.
-3. The walking matrix contains no street network, so walking time is underestimated.
+1. **The frozen thermal policy did not change the 90 weather-related matched routes.** The candidate window is capped at 10 and prioritises mandatory POIs; relaxed guardrails reveal a WES–utility trade-off in the finite-domain analysis.
+2. **The 10 seeds are repeated computational runs, not independent disruptions.** Results are interpreted across the six scripted disruption families; early, nominal and late trigger variants are repeated tests within each family.
+3. The coordinate-derived walking matrix does not model crossings, barriers, elevation or street-level detours, so its travel times are controlled proxies rather than measured pedestrian-network times.
 4. Early Overpass snapshots are retained for provenance under `archive/overpass_cache/` and are not referenced by the application.
 5. The repository contains no `LICENSE` file; contact the author before academic reuse.
 
